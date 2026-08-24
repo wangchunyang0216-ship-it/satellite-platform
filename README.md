@@ -1,39 +1,57 @@
-# 数据中心vue
+Shur logo
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+Shur v3.6.8
+基于 Vue/Element UI 和 Spring Boot/Spring Cloud & Alibaba 前后端分离的分布式微服务架构
 
-#### 软件架构
-软件架构说明
+平台简介
+Shur是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
 
+采用前后端分离的模式，微服务版本前端(基于 Shur-Vue)。
+后端采用Spring Boot、Spring Cloud & Alibaba。
+注册中心、配置中心选型Nacos，权限认证使用Redis。
+流量控制框架选型Sentinel，分布式事务选型Seata。
+系统模块
+com.shur     
+├── shur-ui              // 前端框架 [80]
+├── shur-gateway         // 网关模块 [8080]
+├── shur-auth            // 认证中心 [9200]
+├── shur-api             // 接口模块
+│       └── shur-api-system                          // 系统接口
+├── shur-common          // 通用模块
+│       └── shur-common-core                         // 核心模块
+│       └── shur-common-datascope                    // 权限范围
+│       └── shur-common-datasource                   // 多数据源
+│       └── shur-common-log                          // 日志记录
+│       └── shur-common-redis                        // 缓存服务
+│       └── shur-common-seata                        // 分布式事务
+│       └── shur-common-security                     // 安全模块
+│       └── shur-common-sensitive                    // 数据脱敏
+│       └── shur-common-swagger                      // 系统接口
+├── shur-modules         // 业务模块
+│       └── shur-system                              // 系统模块 [9201]
+│       └── shur-gen                                 // 代码生成 [9202]
+│       └── shur-job                                 // 定时任务 [9203]
+│       └── shur-file                                // 文件服务 [9300]
+├── shur-visual          // 图形化管理模块
+│       └── shur-visual-monitor                      // 监控中心 [9100]
+├──pom.xml                // 公共依赖
+架构图
 
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+内置功能
+用户管理：用户是系统操作者，该功能主要完成系统用户配置。
+部门管理：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。
+岗位管理：配置系统用户所属担任职务。
+菜单管理：配置系统菜单，操作权限，按钮权限标识等。
+角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
+字典管理：对系统中经常使用的一些较为固定的数据进行维护。
+参数管理：对系统动态配置常用参数。
+通知公告：系统通知公告信息发布维护。
+操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
+登录日志：系统登录日志记录查询包含登录异常。
+在线用户：当前系统中活跃用户状态监控。
+定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
+代码生成(未适配)：前后端代码的生成（java、html、xml、sql）支持CRUD下载 。
+系统接口：根据业务代码自动生成相关的api接口文档。
+服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
+在线构建器：拖动表单元素生成相应的HTML代码。
+连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
