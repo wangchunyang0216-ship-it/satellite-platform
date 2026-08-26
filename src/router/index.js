@@ -60,7 +60,7 @@ export const constantRoutes = [
   {
     path: '',
     component: Layout,
-    redirect: '/index',
+    redirect: '/rs/home',
     children: [
       {
         path: '/index',
@@ -88,6 +88,60 @@ export const constantRoutes = [
         name: 'Profile',
         meta: { title: '个人中心', icon: 'user' }
       }
+    ]
+  },
+
+  // ══════════════════════════════════════
+  //  遥感卫星数据服务平台（集成）
+  // ══════════════════════════════════════
+  // 遥感门户首页（公开，不套 Layout）
+  {
+    path: '/rs/home',
+    component: () => import('@/views/home/HomePage.vue'),
+    hidden: true,
+    meta: { title: '遥感平台门户' }
+  },
+  // 应用场景详情（公开，不套 Layout）
+  { path: '/scenarios/agriculture', component: () => import('@/views/scenarios/SmartAgriculturePage.vue'), hidden: true, meta: { title: '智慧农业' } },
+  { path: '/scenarios/urban', component: () => import('@/views/scenarios/UrbanPlanningPage.vue'), hidden: true, meta: { title: '城市规划' } },
+  { path: '/scenarios/water', component: () => import('@/views/scenarios/WaterManagementPage.vue'), hidden: true, meta: { title: '水资源管理' } },
+  { path: '/scenarios/forestry', component: () => import('@/views/scenarios/ForestryMonitoringPage.vue'), hidden: true, meta: { title: '林业监测' } },
+  // 遥感控制台业务（套 Layout，侧边栏「遥感平台」菜单）
+  {
+    path: '/console',
+    component: Layout,
+    redirect: '/console/dashboard',
+    meta: { title: '遥感平台', icon: 'monitor' },
+    children: [
+      { path: 'dashboard', component: () => import('@/views/console/DashboardPage.vue'), name: 'RsDashboard', meta: { title: '控制台', icon: 'dashboard' } },
+      { path: 'computing/basic', component: () => import('@/views/computing/AlgorithmServicePage.vue'), name: 'RsAlgorithm', meta: { title: '算法服务', icon: 'build' } },
+      { path: 'computing/models', component: () => import('@/views/computing/ComputingHubPage.vue'), name: 'RsModels', meta: { title: 'AI 智能模型', icon: 'skill' } },
+      { path: 'computing/models/recognition', component: () => import('@/views/computing/models/RecognitionPage.vue'), name: 'RsRecognition', hidden: true, meta: { title: '地物识别', activeMenu: '/console/computing/models' } },
+      { path: 'computing/models/detection', component: () => import('@/views/computing/models/TargetDetectionPage.vue'), name: 'RsDetection', hidden: true, meta: { title: '目标检测', activeMenu: '/console/computing/models' } },
+      { path: 'computing/models/change-detection', component: () => import('@/views/computing/models/ChangeDetectionPage.vue'), name: 'RsChangeDetection', hidden: true, meta: { title: '变化检测', activeMenu: '/console/computing/models' } },
+      { path: 'computing/models/multimodal-fusion', component: () => import('@/views/computing/models/MultiModalFusionPage.vue'), name: 'RsFusion', hidden: true, meta: { title: '多模态融合', activeMenu: '/console/computing/models' } },
+      { path: 'tasks', component: () => import('@/views/computing/TaskCenterPage.vue'), name: 'RsTasks', meta: { title: '任务中心', icon: 'list' } },
+      { path: 'data', component: () => import('@/views/portal/DataCatalogPage.vue'), name: 'RsData', meta: { title: '数据中心', icon: 'data' } },
+      { path: 'data/:id', component: () => import('@/views/portal/DataDetailPage.vue'), name: 'RsDataDetail', hidden: true, meta: { title: '数据详情', activeMenu: '/console/data' } },
+      { path: 'cart', component: () => import('@/views/portal/CartPage.vue'), name: 'RsCart', hidden: true, meta: { title: '购物车', activeMenu: '/console/data' } },
+      { path: 'orders', component: () => import('@/views/portal/MyOrdersPage.vue'), name: 'RsOrders', hidden: true, meta: { title: '我的订单', activeMenu: '/console/data' } },
+      { path: 'checkout', component: () => import('@/views/portal/CheckoutPage.vue'), name: 'RsCheckout', hidden: true, meta: { title: '确认下单', activeMenu: '/console/data' } },
+      { path: 'profile', component: () => import('@/views/portal/OtherPage.vue'), name: 'RsProfile', hidden: true, meta: { title: '个人中心', activeMenu: '/console/dashboard' } }
+    ]
+  },
+  // 遥感管理（套 Layout，侧边栏「遥感管理」菜单）
+  {
+    path: '/rs-admin',
+    component: Layout,
+    redirect: '/rs-admin/dashboard',
+    meta: { title: '遥感管理', icon: 'system' },
+    children: [
+      { path: 'dashboard', component: () => import('@/views/dashboard/DashboardPage.vue'), name: 'RsAdminDashboard', meta: { title: '数据大屏', icon: 'dashboard' } },
+      { path: 'providers', component: () => import('@/views/admin/ProvidersPage.vue'), name: 'RsProviders', meta: { title: '数据源管理', icon: 'client' } },
+      { path: 'pipeline', component: () => import('@/views/admin/PipelinePage.vue'), name: 'RsPipeline', meta: { title: '流水线监控', icon: 'chart' } },
+      { path: 'users', component: () => import('@/views/admin/UsersPage.vue'), name: 'RsUsers', meta: { title: '用户管理', icon: 'user' } },
+      { path: 'orders', component: () => import('@/views/admin/OrdersPage.vue'), name: 'RsAdminOrders', meta: { title: '订单管理', icon: 'shopping' } },
+      { path: 'stats', component: () => import('@/views/admin/StatsPage.vue'), name: 'RsStats', meta: { title: '统计看板', icon: 'rate' } }
     ]
   }
 ]

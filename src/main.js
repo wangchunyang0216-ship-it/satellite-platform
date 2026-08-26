@@ -8,6 +8,9 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import locale from 'element-plus/es/locale/lang/zh-cn'
 
 import '@/assets/styles/index.scss' // global css
+import 'leaflet/dist/leaflet.css' // 遥感平台 leaflet
+import 'cesium/Build/Cesium/Widgets/widgets.css' // 遥感平台 cesium
+import '@/assets/styles/rs-theme.scss' // 遥感平台主题（字号变量/通用类）
 
 import App from './App'
 import store from './store'

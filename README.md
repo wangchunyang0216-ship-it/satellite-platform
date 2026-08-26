@@ -3,6 +3,19 @@ Shur logo
 Shur v3.6.8
 基于 Vue/Element UI 和 Spring Boot/Spring Cloud & Alibaba 前后端分离的分布式微服务架构
 
+## 遥感算法服务
+
+遥感算法后端已放入 `backend/`，作为独立的 Python FastAPI 服务运行，默认端口为 `8766`。前端开发代理已配置 `/api` 和 `/ws` 到该端口。
+
+```powershell
+cd backend
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+python main.py
+```
+
+启动后可访问 `http://localhost:8766/api/health` 检查服务，详细说明见 `backend/README.md`。
+
 平台简介
 Shur是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
 

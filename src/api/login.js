@@ -70,6 +70,9 @@ export function getCaptcha() {
   })
 }
 
+// 兼容旧注册页的 getCodeImg（图片验证码接口已改为滑动验证码）
+export const getCodeImg = getCaptcha
+
 // 校验滑动验证码
 export function checkCaptcha(data) {
   return request({

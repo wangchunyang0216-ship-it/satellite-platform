@@ -21,3 +21,13 @@ selenium-debug.log
 
 package-lock.json
 yarn.lock
+
+# Python algorithm service runtime data
+backend/.env
+backend/.venv/
+backend/data.db
+backend/outputs/
+backend/test_data/
+backend/uploads/
+backend/__pycache__/
+backend/**/*.py[cod]
