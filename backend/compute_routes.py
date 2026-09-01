@@ -75,6 +75,7 @@ router = APIRouter(prefix="/api/v1/compute", tags=["compute"])
 class ComputeRunRequest(BaseModel):
     service: str = Field(..., description="服务类型: calibration/atmospheric/geometric/ndvi/mosaic/fusion")
     params: dict = Field(default_factory=dict, description="服务参数")
+    taskName: str | None = Field(default=None, description="任务名称，可选")
 
 
 # ── 响应模型 ──
@@ -82,6 +83,36 @@ class ApiResponse(BaseModel):
     code: int = 0
     message: str = "ok"
     data: dict | None = None
+
+
+SERVICE_LABELS = {
+    "calibration": "辐射定标",
+    "atmospheric": "大气校正",
+    "geometric": "几何校正",
+    "ndvi": "NDVI",
+    "cloud_detection": "云检测",
+    "clip": "影像裁剪",
+    "spectral_index": "光谱指数",
+    "mosaic": "影像镶嵌",
+    "fusion": "影像融合",
+}
+
+
+class RenameTaskRequest(BaseModel):
+    taskName: str = Field(..., min_length=1, max_length=128)
+
+
+def _compact_time(dt: datetime | None = None) -> str:
+    dt = dt or datetime.utcnow()
+    return dt.strftime("%m%d-%H%M")
+
+
+def _next_task_name(db: Session, user_id: int, service: str, created_at: datetime | None = None) -> str:
+    count = db.query(ComputeTask).filter(
+        ComputeTask.user_id == user_id,
+        ComputeTask.service == service,
+    ).count() + 1
+    return f"{SERVICE_LABELS.get(service, service)}-{count:02d}-{_compact_time(created_at)}"
 
 
 # ── 后台执行 ──
@@ -145,13 +176,17 @@ def compute_run(
     #     raise HTTPException(429, "配额已用尽")
 
     task_id = "T-" + uuid.uuid4().hex[:12].upper()
+    created_at = datetime.utcnow()
+    task_name = (req.taskName or "").strip() or _next_task_name(db, current_user.id, req.service, created_at)
 
     task = ComputeTask(
         task_id=task_id,
+        task_name=task_name,
         user_id=current_user.id,
         service=req.service,
         params_json=json.dumps(req.params, ensure_ascii=False),
         status="pending",
+        created_at=created_at,
     )
     db.add(task)
     db.commit()
@@ -167,6 +202,7 @@ def compute_run(
 
     return ApiResponse(data={
         "taskId": task_id,
+        "taskName": task_name,
         "service": req.service,
         "status": "pending",
         "message": f"任务已提交，正在执行{req.service}计算",
@@ -236,6 +272,25 @@ def compute_task_detail(
             data["stats"]["previewUrl"] = f"/api/v1/compute/preview/{full_preview.name}"
 
     return ApiResponse(data=data)
+
+
+@router.patch("/task/{task_id}/name")
+def rename_task(
+    task_id: str,
+    req: RenameTaskRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    task = db.query(ComputeTask).filter(
+        ComputeTask.task_id == task_id,
+        ComputeTask.user_id == current_user.id,
+    ).first()
+    if not task:
+        raise HTTPException(404, "任务不存在")
+    task.task_name = req.taskName.strip()
+    db.commit()
+    db.refresh(task)
+    return ApiResponse(data=task.to_dict(), message="任务名称已更新")
 
 
 # ═══════════════════════════════════════════
@@ -343,6 +398,7 @@ async def compute_upload(
     nir_band: UploadFile = File(None),
     service: str = Form(default="ndvi"),
     params: str = Form(default="{}"),
+    task_name: str = Form(default=""),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -363,6 +419,8 @@ async def compute_upload(
     tmp_dir = Path(__file__).parent / "uploads"
     tmp_dir.mkdir(exist_ok=True)
     task_id = "U-" + uuid.uuid4().hex[:12].upper()
+    created_at = datetime.utcnow()
+    auto_task_name = task_name.strip() or _next_task_name(db, current_user.id, service, created_at)
 
     red_path = tmp_dir / f"{task_id}_red.tif"
     nir_path = tmp_dir / f"{task_id}_nir.tif"
@@ -497,7 +555,7 @@ async def compute_upload(
 
     # 记录到数据库
     task = ComputeTask(
-        task_id=task_id, user_id=current_user.id, service=service,
+        task_id=task_id, task_name=auto_task_name, user_id=current_user.id, service=service,
         params_json=json.dumps({
             "source": "upload",
             "file1": red_band.filename,
@@ -507,7 +565,7 @@ async def compute_upload(
         status="completed", progress=100,
         output_path=result.get("output_path", ""),
         stats_json=json.dumps(stats, ensure_ascii=False),
-        created_at=datetime.utcnow(), completed_at=datetime.utcnow(),
+        created_at=created_at, completed_at=datetime.utcnow(),
     )
     db.add(task)
     db.commit()
@@ -521,7 +579,7 @@ async def compute_upload(
         print(f"[WARN] Cesium PNG 生成失败 (task={task_id}): {e}")
         traceback.print_exc()
 
-    return ApiResponse(data={"taskId": task_id, "status": "completed", "stats": stats})
+    return ApiResponse(data={"taskId": task_id, "taskName": auto_task_name, "status": "completed", "stats": stats})
 
 
 # ── 预览生成辅助函数 ──

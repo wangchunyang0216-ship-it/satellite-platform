@@ -1,0 +1,163 @@
+{
+  "id": "5228500",
+  "name": "遥感卫星数据服务平台",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "181824",
+      "name": "城市规划",
+      "font_class": "chengshiguihua",
+      "unicode": "e700",
+      "unicode_decimal": 59136
+    },
+    {
+      "icon_id": "2268046",
+      "name": "卫星",
+      "font_class": "weixing",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "8859820",
+      "name": "智慧农业",
+      "font_class": "fenzu-copy",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "10054672",
+      "name": "辐射定标",
+      "font_class": "fushedingbiao",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "11372658",
+      "name": "订单",
+      "font_class": "dingdan",
+      "unicode": "e8ae",
+      "unicode_decimal": 59566
+    },
+    {
+      "icon_id": "14418241",
+      "name": "影像融合",
+      "font_class": "yingxiangronghe",
+      "unicode": "e6ba",
+      "unicode_decimal": 59066
+    },
+    {
+      "icon_id": "14439262",
+      "name": "几何校正",
+      "font_class": "jihexiaozheng",
+      "unicode": "e6c2",
+      "unicode_decimal": 59074
+    },
+    {
+      "icon_id": "14709079",
+      "name": "遥感",
+      "font_class": "yaogan",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "16838351",
+      "name": "光谱",
+      "font_class": "guangpu",
+      "unicode": "e6a7",
+      "unicode_decimal": 59047
+    },
+    {
+      "icon_id": "25183013",
+      "name": "变化检测",
+      "font_class": "bianhuajiance",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "25437758",
+      "name": "单位画像-基础信息-年龄分布",
+      "font_class": "danweihuaxiang-jichuxinxi-nianlingfenbu",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "25953224",
+      "name": "水资源管理",
+      "font_class": "shuiziyuanguanli",
+      "unicode": "e667",
+      "unicode_decimal": 58983
+    },
+    {
+      "icon_id": "27624630",
+      "name": "大气校正-48",
+      "font_class": "daqixiaozheng-48",
+      "unicode": "e67c",
+      "unicode_decimal": 59004
+    },
+    {
+      "icon_id": "29371187",
+      "name": "地物识别",
+      "font_class": "diwushibie",
+      "unicode": "e73e",
+      "unicode_decimal": 59198
+    },
+    {
+      "icon_id": "34563366",
+      "name": "目标检测",
+      "font_class": "mubiaojiance",
+      "unicode": "e7b7",
+      "unicode_decimal": 59319
+    },
+    {
+      "icon_id": "34643778",
+      "name": "森林",
+      "font_class": "senlin",
+      "unicode": "e7fc",
+      "unicode_decimal": 59388
+    },
+    {
+      "icon_id": "35889801",
+      "name": "影像镶嵌",
+      "font_class": "yingxiangxiangqian",
+      "unicode": "e79d",
+      "unicode_decimal": 59293
+    },
+    {
+      "icon_id": "38205425",
+      "name": "多模态融合",
+      "font_class": "duomotaironghe",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "38332616",
+      "name": "影像裁剪",
+      "font_class": "yingxiangcaijian",
+      "unicode": "e7d9",
+      "unicode_decimal": 59353
+    },
+    {
+      "icon_id": "43388847",
+      "name": "算法服务",
+      "font_class": "suanfafuwu",
+      "unicode": "e7b0",
+      "unicode_decimal": 59312
+    },
+    {
+      "icon_id": "43810189",
+      "name": "云检测",
+      "font_class": "yunjiance",
+      "unicode": "e6f4",
+      "unicode_decimal": 59124
+    },
+    {
+      "icon_id": "43883006",
+      "name": "计算任务",
+      "font_class": "jisuanrenwu",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    }
+  ]
+}

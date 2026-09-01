@@ -15,10 +15,14 @@
         <span class="exag-val">{{ terrainExaggeration }}x</span>
       </div>
 
-      <el-button size="small" @click="toggleOrbit">
-        {{ isOrbiting ? '⏸ 停止' : '🔄 环绕' }}
-      </el-button>
-      <el-button size="small" @click="resetView">复位</el-button>
+      <el-tooltip :content="isOrbiting ? '停止环绕' : '环绕'" placement="bottom">
+        <el-button class="toolbar-icon-btn" size="small" circle :icon="RefreshRight" @click="toggleOrbit" />
+      </el-tooltip>
+      <el-tooltip content="复位" placement="bottom">
+        <el-button class="toolbar-icon-btn" size="small" circle :icon="Aim" @click="resetView" />
+      </el-tooltip>
+
+      <slot name="toolbar-actions"></slot>
 
       <span class="coord-display" v-if="mousePos">
         {{ mousePos.lat.toFixed(4) }}°N {{ mousePos.lng.toFixed(4) }}°E
@@ -29,6 +33,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { Aim, RefreshRight } from '@element-plus/icons-vue'
 import * as Cesium from 'cesium'
 import type { CesiumLayerConfig } from '@/types/cesium'
 
@@ -339,11 +344,14 @@ onUnmounted(() => { removeAllLayers(); viewer?.destroy(); viewer = null })
 .cesium-container { width: 100%; height: 100%; }
 .cesium-toolbar {
   position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000;
-  display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.95);
-  padding: 6px 12px; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.15); flex-wrap: wrap;
+  min-width: 640px; max-width: calc(100% - 32px);
+  display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.95);
+  padding: 6px 14px; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.15); flex-wrap: nowrap;
+  overflow: hidden;
 }
-.exag-slider { display: flex; align-items: center; gap: 4px; }
+.toolbar-icon-btn { width: 28px; height: 28px; padding: 0; }
+.exag-slider { display: flex; align-items: center; gap: 4px; flex-shrink: 0; white-space: nowrap; }
 .exag-label { font-size: 13px; color: #606266; }
 .exag-val { font-size: 13px; color: #606266; width: 28px; text-align: right; }
-.coord-display { font-size: 13px; color: #909399; font-family: monospace; margin-left: 4px; }
+.coord-display { font-size: 13px; color: #909399; font-family: monospace; margin-left: 4px; white-space: nowrap; }
 </style>

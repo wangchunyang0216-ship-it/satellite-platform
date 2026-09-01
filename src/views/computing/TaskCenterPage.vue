@@ -42,31 +42,38 @@
         </div>
       </template>
 
-      <el-table :data="taskList" border stripe style="width:100%" v-loading="loading">
-        <el-table-column prop="taskId" label="任务 ID" width="150" />
-        <el-table-column label="算法服务" width="120" align="center">
+      <el-table :data="taskList" border stripe class="task-table" v-loading="loading">
+        <el-table-column prop="taskId" label="任务 ID" min-width="260" show-overflow-tooltip />
+        <el-table-column label="算法服务" min-width="150" align="center">
           <template #default="{ row }">
-            <el-tag size="small" :type="serviceTag(row.service)">{{ serviceLabel(row.service) }}</el-tag>
+            <el-tag size="large" :type="serviceTag(row.service)">{{ serviceLabel(row.service) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="100" align="center">
+        <el-table-column label="状态" min-width="120" align="center">
           <template #default="{ row }">
-            <el-tag :type="statusTag(row.status)" size="small">{{ statusLabel(row.status) }}</el-tag>
+            <el-tag :type="statusTag(row.status)" size="large">{{ statusLabel(row.status) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="提交时间" width="170" align="center">
+        <el-table-column label="任务操作" min-width="150" align="center">
+          <template #default="{ row }">
+            <el-button link :type="taskActionType(row.status)" @click="handleStatusAction(row)">
+              {{ taskActionLabel(row.status) }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="提交时间" min-width="210" align="center">
           <template #default="{ row }">
             {{ row.createdAt ? new Date(row.createdAt).toLocaleString() : '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center" fixed="right">
+        <el-table-column label="操作" min-width="220" align="center" fixed="right">
           <template #default="{ row }">
-            <el-button link type="primary" size="small"
+            <el-button link type="primary"
               :disabled="row.status !== 'completed'"
               @click="downloadResult(row.taskId)">
               下载 TIF
             </el-button>
-            <el-button link type="danger" size="small" @click="handleDelete(row.taskId)">
+            <el-button link type="danger" @click="handleDelete(row.taskId)">
               删除
             </el-button>
           </template>
@@ -89,11 +96,13 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
 import PageHeader from '@/components/common/PageHeader.vue'
 import { computeApi, type AlgorithmTask } from '@/api/compute'
 
+const router = useRouter()
 const loading = ref(false)
 const taskList = ref<AlgorithmTask[]>([])
 const total = ref(0)
@@ -132,6 +141,14 @@ function statusTag(s: string) {
   return m[s] || 'info'
 }
 function statusLabel(s: string) { return statusLabels[s] || s }
+function taskActionLabel(s: string) {
+  const m: Record<string, string> = { pending: '查看排队状态', running: '查看完成状态', completed: '查看结果', failed: '查看错误' }
+  return m[s] || '查看状态'
+}
+function taskActionType(s: string) {
+  const m: Record<string, 'primary' | 'success' | 'warning' | 'danger'> = { pending: 'warning', running: 'primary', completed: 'success', failed: 'danger' }
+  return m[s] || 'primary'
+}
 
 async function loadTasks() {
   loading.value = true
@@ -177,6 +194,18 @@ async function handleClearAll() {
   } catch { /* cancelled */ }
 }
 
+function handleStatusAction(row: AlgorithmTask) {
+  if (row.status === 'completed') {
+    router.push(`/console/computing/result/${row.taskId}`)
+    return
+  }
+  if (row.status === 'failed') {
+    ElMessage.error(`任务 ${row.taskId} 执行失败，请检查参数或重新提交`)
+    return
+  }
+  ElMessage.info(`任务 ${row.taskId} 当前状态：${statusLabel(row.status)}`)
+}
+
 function downloadResult(taskId: string) {
   const url = computeApi.getDownloadUrl(taskId)
   const token = localStorage.getItem('token')
@@ -190,12 +219,18 @@ onMounted(() => loadTasks())
 </script>
 
 <style scoped>
-.page { flex:1; display:flex; flex-direction:column; padding:12px 16px 40px; overflow-y:auto; min-height:0; }
+.page { flex:1; display:flex; flex-direction:column; padding:12px 16px 24px; overflow-y:auto; min-height:0; height:100%; }
 .filter-card { margin-bottom:16px; }
-.table-card { margin-bottom:16px; }
+.table-card { flex:1; min-height:0; margin-bottom:0; display:flex; flex-direction:column; }
+.table-card :deep(.el-card__body) { flex:1; min-height:0; display:flex; flex-direction:column; padding:0 20px 20px; }
 .table-header { display:flex; align-items:center; gap:16px; }
 .card-title { font-size:17px; font-weight:600; color:#303133; }
 .task-count { font-size:14px; color:#909399; }
 .batch-actions { margin-left:auto; display:flex; gap:8px; }
+.task-table { flex:1; width:100%; font-size:15px; }
+.task-table :deep(.el-table__cell) { padding:16px 0; }
+.task-table :deep(.cell) { line-height:24px; }
+.task-table :deep(.el-table__header .cell) { font-weight:700; white-space:nowrap; }
+.task-table :deep(.el-table__body .el-table__cell:first-child .cell) { white-space:nowrap; font-family:Consolas, Monaco, monospace; font-weight:600; color:#172033; }
 .pagination-wrapper { display:flex; justify-content:flex-end; margin-top:16px; }
 </style>

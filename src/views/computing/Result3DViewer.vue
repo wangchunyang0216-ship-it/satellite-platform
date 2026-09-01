@@ -3,11 +3,12 @@
     <!-- 左侧面板：任务列表 -->
     <aside class="r3v-panel">
       <div class="panel-header">
-        <h3>3D 可视化</h3>
-        <p>已完成 {{ completedTasks.length }} 个任务，已加载 {{ layers.layerCount }} 个图层</p>
+        <h3>{{ routeTaskId ? '任务结果' : '3D 可视化' }}</h3>
+        <p v-if="routeTaskId">仅展示当前任务：{{ routeTaskId }}</p>
+        <p v-else>已完成 {{ completedTasks.length }} 个任务，已加载 {{ layers.layerCount }} 个图层</p>
       </div>
 
-      <div class="panel-actions">
+      <div class="panel-actions" v-if="!routeTaskId">
         <el-button size="small" type="primary" @click="loadAll" :loading="layers.loading.value">
           加载全部
         </el-button>
@@ -69,7 +70,8 @@
       <div v-else class="empty-state">
         <el-icon :size="40" color="#D1D5DB"><Picture /></el-icon>
         <p>暂无已完成的任务</p>
-        <span>去 <router-link to="/console/computing/basic">算法服务</router-link> 提交计算任务</span>
+        <span v-if="routeTaskId">该任务暂无可渲染结果，请确认任务已完成并已生成影像结果</span>
+        <span v-else>去 <router-link to="/console/computing/basic">算法服务</router-link> 提交计算任务</span>
       </div>
     </aside>
 
@@ -82,6 +84,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Picture } from '@element-plus/icons-vue'
 import CesiumViewer from '@/components/MapView/CesiumViewer.vue'
@@ -89,6 +92,8 @@ import { useCesiumLayers, getServiceColor } from '@/composables/useCesiumLayers'
 import { computeApi, type AlgorithmTask } from '@/api/compute'
 
 const cesiumRef = ref<InstanceType<typeof CesiumViewer>>()
+const route = useRoute()
+const routeTaskId = typeof route.params.taskId === 'string' ? route.params.taskId : ''
 const layers = useCesiumLayers()
 const completedTasks = ref<AlgorithmTask[]>([])
 const loadingTasks = reactive(new Set<string>())
@@ -103,13 +108,26 @@ onMounted(async () => {
 
 async function loadTasks() {
   try {
+    if (routeTaskId) {
+      const res = await computeApi.getTask(routeTaskId)
+      const task = ((res.data as any).data || res.data) as AlgorithmTask
+      if (!task || task.status !== 'completed') {
+        completedTasks.value = []
+        ElMessage.warning('当前任务还没有完成，暂时不能渲染结果')
+        return
+      }
+      completedTasks.value = [task]
+      await prepareTaskImagery(task.taskId)
+      loadTaskLayer(task)
+      return
+    }
+
     const res = await computeApi.getTasks(1, 100)
     const list = (res.data as any).data?.list || (res.data as any).list || []
-    completedTasks.value = (list as AlgorithmTask[]).filter(
-      (t: AlgorithmTask) => t.status === 'completed'
-    )
+    completedTasks.value = (list as AlgorithmTask[]).filter((t: AlgorithmTask) => t.status === 'completed')
   } catch {
-    // 后端未启动时静默
+    completedTasks.value = []
+    ElMessage.error(routeTaskId ? '任务结果加载失败，请确认算法后端正在运行' : '任务列表加载失败')
   }
 }
 
@@ -129,6 +147,7 @@ function toggleTask(task: AlgorithmTask) {
 }
 
 function loadTaskLayer(task: AlgorithmTask) {
+  if (isLayerLoaded(task.taskId)) return
   loadingTasks.add(task.taskId)
   try {
     const config = layers.addTaskLayer(task)
@@ -144,6 +163,16 @@ function loadTaskLayer(task: AlgorithmTask) {
     ElMessage.error(`加载图层失败: ${task.taskId}`)
   } finally {
     loadingTasks.delete(task.taskId)
+  }
+}
+
+async function prepareTaskImagery(taskId: string) {
+  try {
+    await fetch(computeApi.getImageryUrl(taskId), {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    })
+  } catch {
+    // 这里不阻断渲染；后端如果已经生成过 preview，Cesium 图层仍然可以直接加载。
   }
 }
 

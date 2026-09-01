@@ -10,15 +10,13 @@
 
     <div class="right-menu">
       <template v-if="appStore.device !== 'mobile'">
+        <el-tooltip content="平台首页" effect="dark" placement="bottom">
+          <div class="right-menu-item hover-effect portal-home-entry" @click="goPortalHome">
+            <el-icon><HomeFilled /></el-icon>
+          </div>
+        </el-tooltip>
+
         <header-search id="header-search" class="right-menu-item" />
-
-        <el-tooltip content="源码地址" effect="dark" placement="bottom">
-          <shur-git id="shur-git" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-        <el-tooltip content="文档地址" effect="dark" placement="bottom">
-          <shur-doc id="shur-doc" class="right-menu-item hover-effect" />
-        </el-tooltip>
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
@@ -74,8 +72,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import HeaderSearch from '@/components/HeaderSearch'
-import ShurGit from '@/components/Shur/Git'
-import ShurDoc from '@/components/Shur/Doc'
+import { HomeFilled } from '@element-plus/icons-vue'
 import useAppStore from '@/store/modules/app'
 import useUserStore from '@/store/modules/user'
 import useLockStore from '@/store/modules/lock'
@@ -130,6 +127,10 @@ function lockScreen() {
   const currentPath = route.fullPath
   lockStore.lockScreen(currentPath)
   router.push('/lock')
+}
+
+function goPortalHome() {
+  router.push('/rs/home')
 }
 
 async function toggleTheme(event) {
@@ -263,6 +264,15 @@ async function toggleTheme(event) {
           &:hover {
             transform: scale(1.15);
           }
+        }
+      }
+
+      &.portal-home-entry {
+        display: flex;
+        align-items: center;
+
+        .el-icon {
+          font-size: 18px;
         }
       }
     }

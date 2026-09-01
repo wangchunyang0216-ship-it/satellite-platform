@@ -39,6 +39,7 @@ class ComputeTask(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     task_id = Column(String(64), unique=True, nullable=False, index=True)
+    task_name = Column(String(128), default="")
     user_id = Column(Integer, nullable=False)
     service = Column(String(32), nullable=False)                 # calibration / atmospheric / ...
     params_json = Column(String(4096), default="{}")              # 请求参数 JSON
@@ -55,6 +56,7 @@ class ComputeTask(Base):
         return {
             "id": self.id,
             "taskId": self.task_id,
+            "taskName": self.task_name,
             "userId": self.user_id,
             "service": self.service,
             "params": self.params_json,

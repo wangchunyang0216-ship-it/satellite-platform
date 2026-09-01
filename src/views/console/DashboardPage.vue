@@ -25,7 +25,8 @@
       <el-col :span="6" v-for="card in overviewCards" :key="card.label">
         <el-card shadow="never" class="ov-card" @click="$router.push(card.route)">
           <div class="ovc-icon">
-            <el-icon :size="22"><component :is="card.icon" /></el-icon>
+            <svg-icon v-if="typeof card.icon === 'string'" :icon-class="card.icon" />
+            <el-icon v-else :size="22"><component :is="card.icon" /></el-icon>
           </div>
           <div class="ovc-body">
             <div class="ovc-val">{{ card.value }}</div>
@@ -44,7 +45,8 @@
           </template>
           <div class="quick-grid">
             <div v-for="q in quickLinks" :key="q.label" class="quick-item" @click="$router.push(q.route)">
-              <el-icon :size="20" class="qi-icon"><component :is="q.icon" /></el-icon>
+              <svg-icon v-if="typeof q.icon === 'string'" :icon-class="q.icon" class-name="qi-icon" />
+              <el-icon v-else :size="20" class="qi-icon"><component :is="q.icon" /></el-icon>
               <span class="qi-label">{{ q.label }}</span>
               <span class="qi-desc">{{ q.desc }}</span>
             </div>
@@ -78,7 +80,7 @@
       </template>
       <div class="svc-row">
         <div v-for="s in recommendServices" :key="s.id" class="svc-chip" @click="$router.push('/console/computing/basic')">
-          <el-icon :size="22" class="svc-icon"><component :is="s.icon" /></el-icon>
+          <svg-icon :icon-class="s.icon" class-name="svc-icon" />
           <div>
             <strong>{{ s.name }}</strong>
             <small>{{ s.desc }}</small>
@@ -95,16 +97,8 @@ import { useUserStore } from '@/stores/useUserStore'
 import { computeApi, type AlgorithmTask } from '@/api/compute'
 import {
   Picture,
-  Setting,
-  Cpu,
-  Box,
   FolderOpened,
-  List,
   User,
-  Sunny,
-  Cloudy,
-  MagicStick,
-  ScaleToOriginal,
 } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
@@ -125,27 +119,27 @@ const quotaColor = computed(() => {
 /* ───── 概览卡片 ───── */
 const overviewCards = [
   { icon: Picture, value: '—', label: '数据景数', route: '/console/data' },
-  { icon: Setting, value: '—', label: '计算任务', route: '/console/tasks' },
-  { icon: Cpu, value: '9', label: '算法服务', route: '/console/computing/basic' },
-  { icon: Box, value: '—', label: '我的订单', route: '/console/orders' },
+  { icon: 'jisuanrenwu', value: '—', label: '计算任务', route: '/console/tasks' },
+  { icon: 'suanfafuwu', value: '9', label: '算法服务', route: '/console/computing/basic' },
+  { icon: 'dingdan', value: '—', label: '我的订单', route: '/console/orders' },
 ]
 
 /* ───── 快捷入口 ───── */
 const quickLinks = [
   { icon: FolderOpened, label: '数据中心', desc: '浏览与检索卫星数据', route: '/console/data' },
-  { icon: Setting, label: '算法服务', desc: '辐射校正·指数计算·影像处理', route: '/console/computing/basic' },
-  { icon: Cpu, label: 'AI 智能模型', desc: '地物识别·目标检测·变化检测', route: '/console/computing/models' },
-  { icon: List, label: '任务中心', desc: '管理计算任务与结果', route: '/console/tasks' },
-  { icon: Box, label: '我的订单', desc: '查看历史订单', route: '/console/orders' },
+  { icon: 'suanfafuwu', label: '算法服务', desc: '辐射校正·指数计算·影像处理', route: '/console/computing/basic' },
+  { icon: 'yaogan', label: '智能计算中心', desc: '算法服务·遥感大模型·任务编排', route: '/console/computing/models' },
+  { icon: 'jisuanrenwu', label: '任务中心', desc: '管理计算任务与结果', route: '/console/tasks' },
+  { icon: 'dingdan', label: '我的订单', desc: '查看历史订单', route: '/console/orders' },
   { icon: User, label: '个人中心', desc: '账户设置与配额', route: '/console/profile' },
 ]
 
 /* ───── 推荐服务 ───── */
 const recommendServices = [
-  { id: 'ndvi', icon: Sunny, name: 'NDVI 植被指数', desc: '植被覆盖度分析' },
-  { id: 'cloud_detection', icon: Cloudy, name: '云检测', desc: '自动识别云覆盖' },
-  { id: 'fusion', icon: MagicStick, name: '影像融合', desc: '多光谱+全色融合' },
-  { id: 'calibration', icon: ScaleToOriginal, name: '辐射定标', desc: 'DN值→辐射亮度' },
+  { id: 'ndvi', icon: 'guangpu', name: 'NDVI 植被指数', desc: '植被覆盖度分析' },
+  { id: 'cloud_detection', icon: 'yunjiance', name: '云检测', desc: '自动识别云覆盖' },
+  { id: 'fusion', icon: 'yingxiangronghe', name: '影像融合', desc: '多光谱+全色融合' },
+  { id: 'calibration', icon: 'fushedingbiao', name: '辐射定标', desc: 'DN值→辐射亮度' },
 ]
 
 /* ───── 任务 ───── */
@@ -182,6 +176,7 @@ onMounted(async () => {
 .ov-card:hover { box-shadow:0 4px 16px rgba(0,0,0,0.06); border-color:#D1D5DB; }
 .ov-card :deep(.el-card__body) { display:flex; align-items:center; gap:14px; padding:20px; }
 .ovc-icon { display:flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:10px; background:#F0F5FF; color:#409EFF; }
+.ovc-icon .svg-icon { width:22px; height:22px; }
 .ovc-body { flex:1; min-width:0; }
 .ovc-val { font-size:28px; font-weight:700; color:#1F2937; }
 .ovc-label { font-size:17px; color:#9CA3AF; margin-top:2px; }
@@ -220,7 +215,7 @@ onMounted(async () => {
 .svc-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
 .svc-chip { display:flex; align-items:center; gap:12px; padding:16px; border-radius:10px; cursor:pointer; border:1px solid #F0F1F3; transition:all .15s; }
 .svc-chip:hover { background:#F5F7FA; border-color:#C0C4CC; }
-.svc-icon { color:#409EFF; flex-shrink:0; }
+.svc-icon { width:22px; height:22px; color:#409EFF; flex-shrink:0; }
 .svc-chip strong { display:block; font-size:16px; color:#303133; }
 .svc-chip small { font-size:15px; color:#909399; margin-top:2px; display:block; }
 </style>

@@ -18,8 +18,15 @@ const isWhiteList = (path) => {
   return whiteList.some(pattern => isPathMatch(pattern, path))
 }
 
+const isLocalConsole = (path) => {
+  return isPathMatch('/console/**', path) || isPathMatch('/rs-admin/**', path) || path === '/console' || path === '/rs-admin'
+}
+
 router.beforeEach(async (to, from) => {
   NProgress.start()
+  if (isLocalConsole(to.path)) {
+    usePermissionStore().ensureLocalSidebarRouters()
+  }
   if (getToken()) {
     to.meta.title && useSettingsStore().setTitle(to.meta.title)
     const isLock = useLockStore().isLock

@@ -24,13 +24,20 @@ const usePermissionStore = defineStore(
         this.routes = constantRoutes.concat(routes)
       },
       setDefaultRoutes(routes) {
-        this.defaultRoutes = constantRoutes.concat(routes)
+        this.defaultRoutes = uniqueRoutesByPath(constantRoutes.concat(routes))
       },
       setTopbarRoutes(routes) {
-        this.topbarRouters = routes
+        this.topbarRouters = uniqueRoutesByPath(routes)
       },
       setSidebarRouters(routes) {
-        this.sidebarRouters = routes
+        this.sidebarRouters = uniqueRoutesByPath(routes)
+      },
+      ensureLocalSidebarRouters() {
+        if (this.sidebarRouters.length) return
+        this.setRoutes([])
+        this.setSidebarRouters(constantRoutes)
+        this.setDefaultRoutes(constantRoutes)
+        this.setTopbarRoutes(constantRoutes)
       },
       generateRoutes(roles) {
         return new Promise(resolve => {
@@ -122,6 +129,31 @@ export const loadView = (view) => {
     }
   }
   return res
+}
+
+function uniqueRoutesByPath(routes) {
+  const seen = new Set()
+  const walk = (items = []) => {
+    const result = []
+    items.forEach(route => {
+      const key = route.path || route.name || JSON.stringify(route.meta || {})
+      if (seen.has(key)) return
+      seen.add(key)
+      const next = { ...route }
+      if (next.children?.length) {
+        const childSeen = new Set()
+        next.children = next.children.filter(child => {
+          const childKey = child.path || child.name || JSON.stringify(child.meta || {})
+          if (childSeen.has(childKey)) return false
+          childSeen.add(childKey)
+          return true
+        }).map(child => child.children?.length ? { ...child, children: walk(child.children) } : child)
+      }
+      result.push(next)
+    })
+    return result
+  }
+  return walk(routes)
 }
 
 export default usePermissionStore

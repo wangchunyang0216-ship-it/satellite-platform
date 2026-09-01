@@ -1,6 +1,7 @@
 """JWT 签发/校验 + 密码哈希"""
 
 from datetime import datetime, timedelta
+from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
@@ -33,14 +34,26 @@ def create_access_token(user_id: int) -> str:
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
+
+
+def _get_demo_user(db: Session) -> User:
+    """集成演示模式下返回默认用户。"""
+    user = db.query(User).filter(User.username == "demo").first() or db.query(User).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="用户不存在")
+    return user
 
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
     db: Session = Depends(get_db),
 ) -> User:
     """从 Authorization: Bearer <token> 中解析当前用户"""
+    # 白名单页面没有 Shur 登录令牌，直接使用演示用户。
+    if credentials is None:
+        return _get_demo_user(db)
+
     token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -48,10 +61,7 @@ def get_current_user(
     except (JWTError, KeyError, ValueError):
         # demo 集成模式：集成到 Shur 后，前端传的是 Shur 的 JWT（遥感后端无法解析）。
         # 降级到默认 demo 用户，保证算法服务等业务接口仍可用。
-        user = db.query(User).filter(User.username == "demo").first() or db.query(User).first()
-        if not user:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="用户不存在")
-        return user
+        return _get_demo_user(db)
 
     user = db.query(User).filter(User.id == user_id).first()
     if not user:

@@ -2,8 +2,8 @@
   <div class="chub">
     <div class="inner">
       <div class="page-head">
-        <h1>服务计算</h1>
-        <p>算法服务 & 遥感大模型 — 一站式遥感计算平台</p>
+        <h1>智能计算中心</h1>
+        <p>整合标准算法服务与遥感大模型能力，统一支撑影像处理、智能识别和计算任务流转。</p>
       </div>
 
       <!-- 算法服务 -->
@@ -11,19 +11,18 @@
         <div class="sec-head-card algo">
           <div class="sec-head">
             <div class="sec-title">
-              <span class="sec-ico algo-ico"><el-icon :size="22"><Setting /></el-icon></span>
+              <span class="sec-ico algo-ico"><svg-icon icon-class="suanfafuwu" /></span>
               <div class="sec-title-text">
                 <h2>算法服务</h2>
                 <span class="sec-subtitle">Algorithm Services</span>
               </div>
             </div>
-            <span class="badge">Python 引擎</span>
           </div>
           <p class="sec-desc">成熟的遥感数据处理算法，涵盖辐射校正、影像预处理、指数计算与影像处理四大类。</p>
         </div>
         <div class="svc-grid">
           <div v-for="s in visibleBasic" :key="s.id" class="card svc-item" @click="go(s.route)">
-            <div class="svc-ico" :style="{background:s.color}"><el-icon :size="18"><component :is="s.icon" /></el-icon></div>
+            <div class="svc-ico" :style="{background:s.color}"><svg-icon :icon-class="s.icon" /></div>
             <div class="svc-body"><h4>{{ s.name }}</h4><p>{{ s.desc }}</p></div>
             <el-icon class="arr"><ArrowRight /></el-icon>
           </div>
@@ -39,19 +38,18 @@
         <div class="sec-head-card ai">
           <div class="sec-head">
             <div class="sec-title">
-              <span class="sec-ico ai-ico"><el-icon :size="22"><Cpu /></el-icon></span>
+              <span class="sec-ico ai-ico"><svg-icon icon-class="yaogan" /></span>
               <div class="sec-title-text">
                 <h2>遥感大模型</h2>
                 <span class="sec-subtitle">Remote Sensing Foundation Models</span>
               </div>
             </div>
-            <span class="badge ai">AI 深度学习</span>
           </div>
           <p class="sec-desc">基于前沿深度学习架构的遥感智能分析，覆盖地物识别、目标检测、变化检测与多模态融合四大能力。</p>
         </div>
         <div class="model-grid">
           <div v-for="m in visibleModels" :key="m.id" class="card model-card" @click="go(m.route)">
-            <div class="model-ico" :style="{background:m.color}"><el-icon :size="18"><component :is="m.icon" /></el-icon></div>
+            <div class="model-ico" :style="{background:m.color}"><svg-icon :icon-class="m.icon" /></div>
             <div class="model-body">
               <div class="model-top"><h4>{{ m.name }}</h4><el-tag size="small" effect="plain" round>{{ m.modelTag }}</el-tag></div>
               <p>{{ m.desc }}</p>
@@ -74,31 +72,31 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowRight, ArrowDown, Setting, Cpu, ScaleToOriginal, MostlyCloudy, MapLocation, Cloudy, Scissor, Sunny, TrendCharts, Grid, MagicStick, OfficeBuilding, Aim, Refresh, Link } from '@element-plus/icons-vue'
+import { ArrowRight, ArrowDown } from '@element-plus/icons-vue'
 const router = useRouter()
 
 interface S { id:string; name:string; desc:string; icon:string; color:string; route:string; tags?:string[]; modelTag?:string }
 
 const basicExpanded = ref(false)
 const basic:S[] = [
-  { id:'cal',name:'辐射定标',desc:'DN值→辐射亮度值及表观反射率',icon:'ScaleToOriginal',color:'rgba(37,99,235,0.06)',route:'/console/computing/basic' },
-  { id:'atm',name:'大气校正',desc:'消除大气散射与吸收，获取地表真实反射率',icon:'MostlyCloudy',color:'rgba(5,150,105,0.06)',route:'/console/computing/basic' },
-  { id:'geo',name:'几何校正',desc:'消除几何畸变，影像精确地理编码',icon:'MapLocation',color:'rgba(217,119,6,0.06)',route:'/console/computing/basic' },
-  { id:'cloud',name:'云检测',desc:'自动识别云覆盖区域与云量百分比',icon:'Cloudy',color:'rgba(107,114,128,0.06)',route:'/console/computing/basic' },
-  { id:'clip',name:'影像裁剪',desc:'按ROI矩形区域提取影像子区域',icon:'Scissor',color:'rgba(239,68,68,0.06)',route:'/console/computing/basic' },
-  { id:'ndvi',name:'NDVI 植被指数',desc:'归一化植被指数，定量评估植被覆盖度',icon:'Sunny',color:'rgba(5,150,105,0.06)',route:'/console/computing/basic' },
-  { id:'spec',name:'光谱指数扩展',desc:'EVI/NDWI/SAVI/NDBI等7种指数',icon:'TrendCharts',color:'rgba(124,58,237,0.06)',route:'/console/computing/basic' },
-  { id:'mos',name:'影像镶嵌',desc:'多景影像无缝拼接，生成大范围影像',icon:'Grid',color:'rgba(245,158,11,0.06)',route:'/console/computing/basic' },
-  { id:'fus',name:'影像融合',desc:'多光谱+全色融合，提升空间分辨率',icon:'MagicStick',color:'rgba(37,99,235,0.06)',route:'/console/computing/basic' },
+  { id:'cal',name:'辐射定标',desc:'DN值→辐射亮度值及表观反射率',icon:'fushedingbiao',color:'rgba(37,99,235,0.06)',route:'/console/computing/basic' },
+  { id:'atm',name:'大气校正',desc:'消除大气散射与吸收，获取地表真实反射率',icon:'daqixiaozheng-48',color:'rgba(5,150,105,0.06)',route:'/console/computing/basic' },
+  { id:'geo',name:'几何校正',desc:'消除几何畸变，影像精确地理编码',icon:'jihexiaozheng',color:'rgba(217,119,6,0.06)',route:'/console/computing/basic' },
+  { id:'cloud',name:'云检测',desc:'自动识别云覆盖区域与云量百分比',icon:'yunjiance',color:'rgba(107,114,128,0.06)',route:'/console/computing/basic' },
+  { id:'clip',name:'影像裁剪',desc:'按ROI矩形区域提取影像子区域',icon:'yingxiangcaijian',color:'rgba(239,68,68,0.06)',route:'/console/computing/basic' },
+  { id:'ndvi',name:'NDVI 植被指数',desc:'归一化植被指数，定量评估植被覆盖度',icon:'guangpu',color:'rgba(5,150,105,0.06)',route:'/console/computing/basic' },
+  { id:'spec',name:'光谱指数扩展',desc:'EVI/NDWI/SAVI/NDBI等7种指数',icon:'danweihuaxiang-jichuxinxi-nianlingfenbu',color:'rgba(124,58,237,0.06)',route:'/console/computing/basic' },
+  { id:'mos',name:'影像镶嵌',desc:'多景影像无缝拼接，生成大范围影像',icon:'yingxiangxiangqian',color:'rgba(245,158,11,0.06)',route:'/console/computing/basic' },
+  { id:'fus',name:'影像融合',desc:'多光谱+全色融合，提升空间分辨率',icon:'yingxiangronghe',color:'rgba(37,99,235,0.06)',route:'/console/computing/basic' },
 ]
 
 const visibleBasic = computed(() => basicExpanded.value ? basic : basic.slice(0, 6))
 
 const models:S[] = [
-  { id:'rec',name:'地物识别',desc:'自动识别建筑、道路、森林、水体等地表目标',icon:'OfficeBuilding',color:'rgba(37,99,235,0.06)',route:'/console/computing/models/recognition',tags:['语义分割','U-Net','DeepLab'],modelTag:'分割' },
-  { id:'det',name:'目标检测',desc:'定位并检测飞机、船舶、车辆等特定目标',icon:'Aim',color:'rgba(220,38,38,0.06)',route:'/console/computing/models/detection',tags:['YOLOv8','Faster R-CNN'],modelTag:'检测' },
-  { id:'chg',name:'变化检测',desc:'分析多时相影像，发现城市扩张、森林砍伐',icon:'Refresh',color:'rgba(5,150,105,0.06)',route:'/console/computing/models/change-detection',tags:['Siamese','ChangeFormer'],modelTag:'双时相' },
-  { id:'fm',name:'多模态融合',desc:'融合光学、SAR、高光谱、LiDAR等多源数据',icon:'Link',color:'rgba(217,119,6,0.06)',route:'/console/computing/models/multimodal-fusion',tags:['Cross-Attention','Mamba'],modelTag:'融合' },
+  { id:'rec',name:'地物识别',desc:'自动识别建筑、道路、森林、水体等地表目标',icon:'diwushibie',color:'rgba(37,99,235,0.06)',route:'/console/computing/models/recognition',tags:['语义分割','U-Net','DeepLab'],modelTag:'分割' },
+  { id:'det',name:'目标检测',desc:'定位并检测飞机、船舶、车辆等特定目标',icon:'mubiaojiance',color:'rgba(220,38,38,0.06)',route:'/console/computing/models/detection',tags:['YOLOv8','Faster R-CNN'],modelTag:'检测' },
+  { id:'chg',name:'变化检测',desc:'分析多时相影像，发现城市扩张、森林砍伐',icon:'bianhuajiance',color:'rgba(5,150,105,0.06)',route:'/console/computing/models/change-detection',tags:['Siamese','ChangeFormer'],modelTag:'双时相' },
+  { id:'fm',name:'多模态融合',desc:'融合光学、SAR、高光谱、LiDAR等多源数据',icon:'duomotaironghe',color:'rgba(217,119,6,0.06)',route:'/console/computing/models/multimodal-fusion',tags:['Cross-Attention','Mamba'],modelTag:'融合' },
 ]
 const visibleModels = computed(() => models)
 
@@ -154,6 +152,14 @@ function go(r:string){ router.push(r) }
   background:linear-gradient(135deg, #7C3AED, #8B5CF6); color:#fff;
   box-shadow:0 8px 20px rgba(124,58,237,0.25);
 }
+.sec-ico .svg-icon {
+  width: 22px;
+  height: 22px;
+}
+.algo-ico .svg-icon {
+  width: 40px;
+  height: 40px;
+}
 .sec-title-text { position:relative; z-index:1; }
 .sec-title-text h2 { font-size:23px; font-weight:800; color:#1F2937; margin:0 0 3px; letter-spacing:-0.4px; line-height:1.2; }
 .sec-subtitle { font-size:14px; color:#9CA3AF; font-weight:500; letter-spacing:0.8px; text-transform:uppercase; }
@@ -168,6 +174,8 @@ function go(r:string){ router.push(r) }
 .svc-item { display:flex; align-items:center; gap:14px; cursor:pointer; transition:all .15s; }
 .svc-item:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.06); }
 .svc-ico, .model-ico { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:0; flex-shrink:0; }
+.svc-ico .svg-icon { width:24px; height:24px; color:#2563EB; }
+.model-ico .svg-icon { width:20px; height:20px; color:#2563EB; }
 .svc-body { flex:1; min-width:0; }
 .svc-body h4 { font-size:19px; font-weight:600; color:#1F2937; margin:0 0 3px; }
 .svc-body p { font-size:18px; color:#6B7280; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }

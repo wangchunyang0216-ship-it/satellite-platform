@@ -28,6 +28,7 @@
               </div>
             </div>
           </div>
+          <button class="nav-doc-link" @click="$router.push('/rs/guide')">使用说明文档</button>
         </nav>
         <div class="topbar-right">
           <template v-if="isLoggedIn">
@@ -93,7 +94,7 @@
         <div v-for="p in filteredProducts" :key="p.id" class="product-card"
           @click="handleProductClick(p.id)">
           <div class="pc-icon-wrap">
-            <span class="pc-icon">{{ p.icon }}</span>
+            <svg-icon :icon-class="p.icon" class-name="pc-icon" />
           </div>
           <div class="pc-body">
             <h4 class="pc-name">{{ p.name }}</h4>
@@ -142,7 +143,9 @@
       <h2 class="section-title">多行业遥感应用解决方案</h2>
       <div class="scenario-grid">
         <div v-for="sc in scenarios" :key="sc.title" class="scenario-card" @click="$router.push(sc.route)">
-          <div class="sc-img"><span class="sc-ico">{{ sc.icon }}</span></div>
+          <div class="sc-img">
+            <svg-icon :icon-class="sc.icon" class-name="sc-ico" :style="{ color: sc.color }" />
+          </div>
           <h4>{{ sc.title }}</h4>
           <p>{{ sc.desc }}</p>
         </div>
@@ -176,7 +179,7 @@
           <h5>产品</h5>
           <a @click="scrollToSection('anchor-products')">数据中心</a>
           <a @click="scrollToSection('anchor-products')">算法服务</a>
-          <a @click="scrollToSection('anchor-products')">AI 智能模型</a>
+          <a @click="scrollToSection('anchor-products')">智能计算中心</a>
           <a @click="scrollToSection('anchor-products')">任务中心</a>
         </div>
         <div class="footer-col">
@@ -227,7 +230,7 @@ const navMenus = [
       { icon: FolderOpened, name: '数据中心', desc: '多源卫星数据检索与下载', scroll: 'anchor-products' },
       { icon: Setting, name: '算法服务', desc: '辐射校正、指数计算、影像处理', scroll: 'anchor-products' },
       { icon: FolderOpened, name: '卫星数据源', desc: '哨兵、Landsat、高分等卫星数据', scroll: 'anchor-satellites' },
-      { icon: Cpu, name: 'AI 智能模型', desc: '地物识别、目标检测、变化检测', scroll: 'anchor-products' },
+      { icon: Cpu, name: '智能计算中心', desc: '算法服务与遥感大模型', scroll: 'anchor-products' },
       { icon: List, name: '任务中心', desc: '计算任务管理与监控', scroll: 'anchor-products' },
     ]
   },
@@ -251,15 +254,15 @@ const benefits = [
 
 // ── 产品列表 ──
 const allProducts = [
-  { id: 'calibration', name: '辐射定标', desc: 'DN 值转换为辐射亮度值，支持绝对/相对定标', icon: '📐', category: '辐射校正' },
-  { id: 'atmospheric', name: '大气校正', desc: '基于 6SV 模型消除大气散射与吸收效应', icon: '🌫️', category: '辐射校正' },
-  { id: 'geometric', name: '几何校正', desc: 'RPC 正射校正，DEM 辅助精确定位', icon: '🗺️', category: '辐射校正' },
-  { id: 'cloud_detection', name: '云检测', desc: '多光谱阈值法自动识别云覆盖区域与云量', icon: '☁️', category: '影像预处理' },
-  { id: 'clip', name: '影像裁剪', desc: '按矩形 ROI 提取子影像，支持自定义坐标', icon: '✂️', category: '影像预处理' },
-  { id: 'ndvi', name: 'NDVI 植被指数', desc: '归一化植被指数，定量评估植被覆盖度', icon: '🌿', category: '指数计算' },
-  { id: 'spectral_index', name: '光谱指数扩展', desc: 'EVI、NDWI、SAVI、NDBI 等 7 种指数', icon: '📊', category: '指数计算' },
-  { id: 'mosaic', name: '影像镶嵌', desc: '多景影像无缝拼接，全局匀色处理', icon: '🧩', category: '影像处理' },
-  { id: 'fusion', name: '影像融合', desc: 'Gram-Schmidt / PCA 多光谱全色融合', icon: '✨', category: '影像处理' },
+  { id: 'calibration', name: '辐射定标', desc: 'DN 值转换为辐射亮度值，支持绝对/相对定标', icon: 'fushedingbiao', category: '辐射校正' },
+  { id: 'atmospheric', name: '大气校正', desc: '基于 6SV 模型消除大气散射与吸收效应', icon: 'daqixiaozheng-48', category: '辐射校正' },
+  { id: 'geometric', name: '几何校正', desc: 'RPC 正射校正，DEM 辅助精确定位', icon: 'jihexiaozheng', category: '辐射校正' },
+  { id: 'cloud_detection', name: '云检测', desc: '多光谱阈值法自动识别云覆盖区域与云量', icon: 'yunjiance', category: '影像预处理' },
+  { id: 'clip', name: '影像裁剪', desc: '按矩形 ROI 提取子影像，支持自定义坐标', icon: 'yingxiangcaijian', category: '影像预处理' },
+  { id: 'ndvi', name: 'NDVI 植被指数', desc: '归一化植被指数，定量评估植被覆盖度', icon: 'guangpu', category: '指数计算' },
+  { id: 'spectral_index', name: '光谱指数扩展', desc: 'EVI、NDWI、SAVI、NDBI 等 7 种指数', icon: 'danweihuaxiang-jichuxinxi-nianlingfenbu', category: '指数计算' },
+  { id: 'mosaic', name: '影像镶嵌', desc: '多景影像无缝拼接，全局匀色处理', icon: 'yingxiangxiangqian', category: '影像处理' },
+  { id: 'fusion', name: '影像融合', desc: 'Gram-Schmidt / PCA 多光谱全色融合', icon: 'yingxiangronghe', category: '影像处理' },
 ]
 
 const categoryTabs = [
@@ -278,10 +281,10 @@ const filteredProducts = computed(() =>
 
 // ── 应用场景 ──
 const scenarios = [
-  { icon: '🌾', title: '智慧农业', desc: '利用 NDVI、EVI 等植被指数监测作物长势，结合时序影像实现产量预估与灾害预警', route: '/scenarios/agriculture' },
-  { icon: '🏙️', title: '城市规划', desc: '基于变化检测算法识别土地利用变化，辅助城市规划决策与违建监测', route: '/scenarios/urban' },
-  { icon: '💧', title: '水资源管理', desc: 'NDWI 水体指数提取水体范围，云检测自动剔除无效影像数据', route: '/scenarios/water' },
-  { icon: '🌲', title: '林业监测', desc: '多光谱影像融合提升分辨率，精准识别林区变化与森林健康状态', route: '/scenarios/forestry' },
+  { icon: 'zhihuinongye', color: '#16A34A', title: '智慧农业', desc: '利用 NDVI、EVI 等植被指数监测作物长势，结合时序影像实现产量预估与灾害预警', route: '/scenarios/agriculture' },
+  { icon: 'chengshiguihua', color: '#2563EB', title: '城市规划', desc: '基于变化检测算法识别土地利用变化，辅助城市规划决策与违建监测', route: '/scenarios/urban' },
+  { icon: 'shuiziyuanguanli', color: '#0284C7', title: '水资源管理', desc: 'NDWI 水体指数提取水体范围，云检测自动剔除无效影像数据', route: '/scenarios/water' },
+  { icon: 'senlin', color: '#15803D', title: '林业监测', desc: '多光谱影像融合提升分辨率，精准识别林区变化与森林健康状态', route: '/scenarios/forestry' },
 ]
 
 // ── 亮点 ──
@@ -373,6 +376,8 @@ onUnmounted(() => { window.removeEventListener('scroll', onScroll); if (satMap) 
 .nav-trigger { display:flex; align-items:center; gap:4px; padding:8px 14px; font-size:17px; font-weight:500; color:#374151; cursor:pointer; border-radius:8px; transition:all .15s; }
 .nav-trigger:hover { color:#2563EB; background:rgba(37,99,235,0.04); }
 .nav-trigger .arrow { font-size:13px; color:#9CA3AF; margin-top:1px; }
+.nav-doc-link { border:0; background:transparent; padding:8px 14px; font-size:17px; font-weight:500; color:#374151; cursor:pointer; border-radius:8px; transition:all .15s; font-family:inherit; }
+.nav-doc-link:hover { color:#2563EB; background:rgba(37,99,235,0.04); }
 .nav-dropdown-panel { display:none; position:absolute; top:100%; left:0; padding-top:8px; min-width:260px; }
 .nav-dropdown:hover .nav-dropdown-panel { display:block; }
 .nav-dropdown-inner { background:#fff; border-radius:12px; box-shadow:0 16px 48px rgba(0,0,0,0.10); border:1px solid #E5E7EB; padding:8px; }
@@ -435,7 +440,7 @@ onUnmounted(() => { window.removeEventListener('scroll', onScroll); if (satMap) 
 .product-card { background:#fff; border:1px solid #E5E7EB; border-radius:12px; padding:24px; cursor:pointer; transition:all .22s; display:flex; flex-direction:column; }
 .product-card:hover { border-color:#2563EB; box-shadow:0 8px 28px rgba(37,99,235,0.08); transform:translateY(-3px); }
 .pc-icon-wrap { width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, rgba(37,99,235,0.06), rgba(99,102,241,0.04)); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
-.pc-icon { font-size:24px; }
+.pc-icon { width:24px; height:24px; color:#2563EB; }
 .pc-body { flex:1; }
 .pc-name { font-size:18px; font-weight:700; color:#1F2937; margin:0 0 6px; }
 .pc-desc { font-size:16px; color:#6B7280; margin:0; line-height:1.6; }
@@ -472,7 +477,8 @@ onUnmounted(() => { window.removeEventListener('scroll', onScroll); if (satMap) 
 .scenario-grid { max-width:1200px; margin:40px auto 0; display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; }
 .scenario-card { background:#fff; border-radius:12px; padding:32px 24px; transition:all .2s; border:1px solid transparent; cursor:pointer; }
 .scenario-card:hover { border-color:#E5E7EB; box-shadow:0 4px 20px rgba(0,0,0,0.04); }
-.sc-ico { font-size:42px; display:block; margin-bottom:16px; }
+.sc-img { display:flex; justify-content:center; margin-bottom:16px; }
+.sc-ico { width:42px; height:42px; display:block; }
 .scenario-card h4 { font-size:19px; font-weight:700; color:#1F2937; margin:0 0 8px; }
 .scenario-card p { font-size:16px; color:#6B7280; margin:0; line-height:1.7; }
 

@@ -10,6 +10,7 @@ import type {
 export interface AlgorithmTask {
   id: number
   taskId: string
+  taskName?: string
   userId: number
   service: string
   params: Record<string, unknown>
@@ -77,6 +78,11 @@ export const computeApi = {
   /** 删除单个任务记录 */
   deleteTask(taskId: string) {
     return request.delete<unknown, ApiResponse>(`/compute/task/${taskId}`)
+  },
+
+  /** 修改任务名称 */
+  renameTask(taskId: string, taskName: string) {
+    return request.patch<unknown, ApiResponse<AlgorithmTask>>(`/compute/task/${taskId}/name`, { taskName })
   },
 
   /** 清空所有任务记录 */
