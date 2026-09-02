@@ -12,6 +12,13 @@
       </div>
     </section>
 
+    <section class="stats">
+      <div v-for="item in stats" :key="item.label" class="stat">
+        <el-icon :size="22"><component :is="item.icon" /></el-icon>
+        <div><strong>{{ item.value }}</strong><span>{{ item.label }}</span></div>
+      </div>
+    </section>
+
     <section v-if="hasSearched" class="search-result">
       <div class="result-head">
         <div><span>SEARCH RESULT</span><h2>卫星搜索结果</h2></div>
@@ -24,13 +31,6 @@
         <div class="result-stats"><div><span>重访周期</span><b>{{ sat.revisit }}</b></div><div><span>数据规模</span><b>{{ sat.sceneCount.toLocaleString() }} 景</b></div></div>
         <el-button type="primary" size="large" @click="openSatellite(sat.id,keyword.trim())">查看该卫星影像数据 <el-icon><ArrowRight/></el-icon></el-button>
       </article>
-    </section>
-
-    <section class="stats">
-      <div v-for="item in stats" :key="item.label" class="stat">
-        <el-icon :size="22"><component :is="item.icon" /></el-icon>
-        <div><strong>{{ item.value }}</strong><span>{{ item.label }}</span></div>
-      </div>
     </section>
 
     <section v-if="!hasSearched" class="fleet-section">

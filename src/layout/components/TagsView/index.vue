@@ -138,7 +138,7 @@ function handleKeyDown(event) {
 }
 
 function isActive(r) {
-  return r.path === route.path
+  return (r.fullPath || r.path) === route.fullPath
 }
 
 function tagActiveStyle(tag) {
@@ -216,7 +216,7 @@ function addTags() {
 function moveToCurrentTag() {
   nextTick(() => {
     for (const r of visitedViews.value) {
-      if (r.path === route.path) {
+      if ((r.fullPath || r.path) === route.fullPath) {
         scrollPaneRef.value.moveToTarget(r)
         if (r.fullPath !== route.fullPath) {
           useTagsViewStore().updateVisitedView(route)

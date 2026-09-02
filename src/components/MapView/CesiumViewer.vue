@@ -23,11 +23,11 @@
       </el-tooltip>
 
       <slot name="toolbar-actions"></slot>
-
-      <span class="coord-display" v-if="mousePos">
-        {{ mousePos.lat.toFixed(4) }}°N {{ mousePos.lng.toFixed(4) }}°E
-      </span>
     </div>
+
+    <span class="coord-overlay" v-if="mousePos">
+      {{ mousePos.lat.toFixed(4) }}°N {{ mousePos.lng.toFixed(4) }}°E
+    </span>
   </div>
 </template>
 
@@ -353,5 +353,16 @@ onUnmounted(() => { removeAllLayers(); viewer?.destroy(); viewer = null })
 .exag-slider { display: flex; align-items: center; gap: 4px; flex-shrink: 0; white-space: nowrap; }
 .exag-label { font-size: 13px; color: #606266; }
 .exag-val { font-size: 13px; color: #606266; width: 28px; text-align: right; }
-.coord-display { font-size: 13px; color: #909399; font-family: monospace; margin-left: 4px; white-space: nowrap; }
+.coord-overlay {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 1000;
+  font-size: 13px;
+  color: rgba(255,255,255,.92);
+  font-family: monospace;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(15,23,42,.75);
+  pointer-events: none;
+}
 </style>

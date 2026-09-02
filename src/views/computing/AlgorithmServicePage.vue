@@ -207,6 +207,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Check, UploadFilled, Picture, Close, Download, Delete } from '@element-plus/icons-vue'
 import CesiumViewer from '@/components/MapView/CesiumViewer.vue'
@@ -215,6 +216,7 @@ import { useCesiumLayers, getServiceColor } from '@/composables/useCesiumLayers'
 import type { CesiumLayerConfig } from '@/types/cesium'
 
 const cesiumRef = ref<InstanceType<typeof CesiumViewer>>()
+const route = useRoute()
 const MAX_LAYER_COUNT = 5
 const DEFAULT_VISIBLE_LAYER_TASKS = 5
 const layers = useCesiumLayers()
@@ -382,10 +384,20 @@ const displayStats = computed(() => {
 
 onMounted(() => {
   refreshCompletedTasks()
+  openServiceFromQuery()
+})
+
+watch(() => route.query.service, () => {
+  openServiceFromQuery()
 })
 
 // ═══ 对话框 ═══
 function openService(svc: ServiceDef) { active.value = svc.id; resetParams(); uploadResult.value = null; dialogVisible.value = true }
+function openServiceFromQuery() {
+  const serviceId = String(route.query.service || '')
+  const svc = services.find(item => item.id === serviceId)
+  if (svc) openService(svc)
+}
 function triggerUpload(band: 'red' | 'nir') { (band === 'red' ? redInput : nirInput).value?.click() }
 function onDrop(band: 'red' | 'nir', e: DragEvent) { const f = e.dataTransfer?.files?.[0]; if (f) uploadAndPreview(band, f) }
 async function onFilePicked(band: 'red' | 'nir', e: Event) { const f = (e.target as HTMLInputElement).files?.[0]; if (f) uploadAndPreview(band, f) }

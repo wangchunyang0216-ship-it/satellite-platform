@@ -54,24 +54,20 @@
             <el-tag :type="statusTag(row.status)" size="large">{{ statusLabel(row.status) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="任务操作" min-width="150" align="center">
-          <template #default="{ row }">
-            <el-button link :type="taskActionType(row.status)" @click="handleStatusAction(row)">
-              {{ taskActionLabel(row.status) }}
-            </el-button>
-          </template>
-        </el-table-column>
         <el-table-column label="提交时间" min-width="210" align="center">
           <template #default="{ row }">
             {{ row.createdAt ? new Date(row.createdAt).toLocaleString() : '--' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="220" align="center" fixed="right">
+        <el-table-column label="操作" min-width="260" align="center" fixed="right">
           <template #default="{ row }">
+            <el-button link :type="taskActionType(row.status)" @click="handleStatusAction(row)">
+              查看
+            </el-button>
             <el-button link type="primary"
               :disabled="row.status !== 'completed'"
               @click="downloadResult(row.taskId)">
-              下载 TIF
+              下载
             </el-button>
             <el-button link type="danger" @click="handleDelete(row.taskId)">
               删除
@@ -141,10 +137,6 @@ function statusTag(s: string) {
   return m[s] || 'info'
 }
 function statusLabel(s: string) { return statusLabels[s] || s }
-function taskActionLabel(s: string) {
-  const m: Record<string, string> = { pending: '查看排队状态', running: '查看完成状态', completed: '查看结果', failed: '查看错误' }
-  return m[s] || '查看状态'
-}
 function taskActionType(s: string) {
   const m: Record<string, 'primary' | 'success' | 'warning' | 'danger'> = { pending: 'warning', running: 'primary', completed: 'success', failed: 'danger' }
   return m[s] || 'primary'

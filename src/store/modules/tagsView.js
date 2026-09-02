@@ -21,6 +21,10 @@ function clearVisitedViews() {
   cache.local.remove(PERSIST_KEY)
 }
 
+function viewKey(view) {
+  return view.fullPath || view.path
+}
+
 const useTagsViewStore = defineStore(
   'tags-view',
   {
@@ -35,27 +39,27 @@ const useTagsViewStore = defineStore(
         this.addCachedView(view)
       },
       addIframeView(view) {
-        if (this.iframeViews.some(v => v.path === view.path)) return
+        if (this.iframeViews.some(v => viewKey(v) === viewKey(view))) return
         this.iframeViews.push(
           Object.assign({}, view, {
-            title: view.meta.title || 'no-name'
+            title: view.query?.title || view.meta.title || 'no-name'
           })
         )
       },
       addVisitedView(view) {
-        if (this.visitedViews.some(v => v.path === view.path)) return
+        if (this.visitedViews.some(v => viewKey(v) === viewKey(view))) return
         this.visitedViews.push(
           Object.assign({}, view, {
-            title: view.meta.title || 'no-name'
+            title: view.query?.title || view.meta.title || 'no-name'
           })
         )
         saveVisitedViews(this.visitedViews)
       },
       addAffixView(view) {
-        if (this.visitedViews.some(v => v.path === view.path)) return
+        if (this.visitedViews.some(v => viewKey(v) === viewKey(view))) return
         this.visitedViews.unshift(
           Object.assign({}, view, {
-            title: view.meta.title || 'no-name'
+            title: view.query?.title || view.meta.title || 'no-name'
           })
         )
       },
@@ -78,12 +82,12 @@ const useTagsViewStore = defineStore(
       delVisitedView(view) {
         return new Promise(resolve => {
           for (const [i, v] of this.visitedViews.entries()) {
-            if (v.path === view.path) {
+            if (viewKey(v) === viewKey(view)) {
               this.visitedViews.splice(i, 1)
               break
             }
           }
-          this.iframeViews = this.iframeViews.filter(item => item.path !== view.path)
+          this.iframeViews = this.iframeViews.filter(item => viewKey(item) !== viewKey(view))
           saveVisitedViews(this.visitedViews)
           resolve([...this.visitedViews])
         })
@@ -114,9 +118,9 @@ const useTagsViewStore = defineStore(
       delOthersVisitedViews(view) {
         return new Promise(resolve => {
           this.visitedViews = this.visitedViews.filter(v => {
-            return v.meta.affix || v.path === view.path
+            return v.meta.affix || viewKey(v) === viewKey(view)
           })
-          this.iframeViews = this.iframeViews.filter(item => item.path === view.path)
+          this.iframeViews = this.iframeViews.filter(item => viewKey(item) === viewKey(view))
           saveVisitedViews(this.visitedViews)
           resolve([...this.visitedViews])
         })
@@ -159,15 +163,17 @@ const useTagsViewStore = defineStore(
       },
       updateVisitedView(view) {
         for (let v of this.visitedViews) {
-          if (v.path === view.path) {
-            v = Object.assign(v, view)
+          if (viewKey(v) === viewKey(view)) {
+            Object.assign(v, view, {
+              title: view.query?.title || view.meta.title || v.title || 'no-name'
+            })
             break
           }
         }
       },
       delRightTags(view) {
         return new Promise(resolve => {
-          const index = this.visitedViews.findIndex(v => v.path === view.path)
+          const index = this.visitedViews.findIndex(v => viewKey(v) === viewKey(view))
           if (index === -1) {
             return
           }
@@ -180,7 +186,7 @@ const useTagsViewStore = defineStore(
               this.cachedViews.splice(i, 1)
             }
             if(item.meta.link) {
-              const fi = this.iframeViews.findIndex(v => v.path === item.path)
+              const fi = this.iframeViews.findIndex(v => viewKey(v) === viewKey(item))
               this.iframeViews.splice(fi, 1)
             }
             return false
@@ -191,7 +197,7 @@ const useTagsViewStore = defineStore(
       },
       delLeftTags(view) {
         return new Promise(resolve => {
-          const index = this.visitedViews.findIndex(v => v.path === view.path)
+          const index = this.visitedViews.findIndex(v => viewKey(v) === viewKey(view))
           if (index === -1) {
             return
           }
@@ -204,7 +210,7 @@ const useTagsViewStore = defineStore(
               this.cachedViews.splice(i, 1)
             }
             if(item.meta.link) {
-              const fi = this.iframeViews.findIndex(v => v.path === item.path)
+              const fi = this.iframeViews.findIndex(v => viewKey(v) === viewKey(item))
               this.iframeViews.splice(fi, 1)
             }
             return false

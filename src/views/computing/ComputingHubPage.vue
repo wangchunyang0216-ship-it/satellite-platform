@@ -1,11 +1,6 @@
 <template>
   <div class="chub">
     <div class="inner">
-      <div class="page-head">
-        <h1>智能计算中心</h1>
-        <p>整合标准算法服务与遥感大模型能力，统一支撑影像处理、智能识别和计算任务流转。</p>
-      </div>
-
       <!-- 算法服务 -->
       <section class="sec">
         <div class="sec-head-card algo">
@@ -21,7 +16,7 @@
           <p class="sec-desc">成熟的遥感数据处理算法，涵盖辐射校正、影像预处理、指数计算与影像处理四大类。</p>
         </div>
         <div class="svc-grid">
-          <div v-for="s in visibleBasic" :key="s.id" class="card svc-item" @click="go(s.route)">
+          <div v-for="s in visibleBasic" :key="s.id" class="card svc-item" @click="goAlgorithmIntro(s)">
             <div class="svc-ico" :style="{background:s.color}"><svg-icon :icon-class="s.icon" /></div>
             <div class="svc-body"><h4>{{ s.name }}</h4><p>{{ s.desc }}</p></div>
             <el-icon class="arr"><ArrowRight /></el-icon>
@@ -79,15 +74,15 @@ interface S { id:string; name:string; desc:string; icon:string; color:string; ro
 
 const basicExpanded = ref(false)
 const basic:S[] = [
-  { id:'cal',name:'辐射定标',desc:'DN值→辐射亮度值及表观反射率',icon:'fushedingbiao',color:'rgba(37,99,235,0.06)',route:'/console/computing/basic' },
-  { id:'atm',name:'大气校正',desc:'消除大气散射与吸收，获取地表真实反射率',icon:'daqixiaozheng-48',color:'rgba(5,150,105,0.06)',route:'/console/computing/basic' },
-  { id:'geo',name:'几何校正',desc:'消除几何畸变，影像精确地理编码',icon:'jihexiaozheng',color:'rgba(217,119,6,0.06)',route:'/console/computing/basic' },
-  { id:'cloud',name:'云检测',desc:'自动识别云覆盖区域与云量百分比',icon:'yunjiance',color:'rgba(107,114,128,0.06)',route:'/console/computing/basic' },
+  { id:'calibration',name:'辐射定标',desc:'DN值→辐射亮度值及表观反射率',icon:'fushedingbiao',color:'rgba(37,99,235,0.06)',route:'/console/computing/basic' },
+  { id:'atmospheric',name:'大气校正',desc:'消除大气散射与吸收，获取地表真实反射率',icon:'daqixiaozheng-48',color:'rgba(5,150,105,0.06)',route:'/console/computing/basic' },
+  { id:'geometric',name:'几何校正',desc:'消除几何畸变，影像精确地理编码',icon:'jihexiaozheng',color:'rgba(217,119,6,0.06)',route:'/console/computing/basic' },
+  { id:'cloud_detection',name:'云检测',desc:'自动识别云覆盖区域与云量百分比',icon:'yunjiance',color:'rgba(107,114,128,0.06)',route:'/console/computing/basic' },
   { id:'clip',name:'影像裁剪',desc:'按ROI矩形区域提取影像子区域',icon:'yingxiangcaijian',color:'rgba(239,68,68,0.06)',route:'/console/computing/basic' },
   { id:'ndvi',name:'NDVI 植被指数',desc:'归一化植被指数，定量评估植被覆盖度',icon:'guangpu',color:'rgba(5,150,105,0.06)',route:'/console/computing/basic' },
-  { id:'spec',name:'光谱指数扩展',desc:'EVI/NDWI/SAVI/NDBI等7种指数',icon:'danweihuaxiang-jichuxinxi-nianlingfenbu',color:'rgba(124,58,237,0.06)',route:'/console/computing/basic' },
-  { id:'mos',name:'影像镶嵌',desc:'多景影像无缝拼接，生成大范围影像',icon:'yingxiangxiangqian',color:'rgba(245,158,11,0.06)',route:'/console/computing/basic' },
-  { id:'fus',name:'影像融合',desc:'多光谱+全色融合，提升空间分辨率',icon:'yingxiangronghe',color:'rgba(37,99,235,0.06)',route:'/console/computing/basic' },
+  { id:'spectral_index',name:'光谱指数扩展',desc:'EVI/NDWI/SAVI/NDBI等7种指数',icon:'danweihuaxiang-jichuxinxi-nianlingfenbu',color:'rgba(124,58,237,0.06)',route:'/console/computing/basic' },
+  { id:'mosaic',name:'影像镶嵌',desc:'多景影像无缝拼接，生成大范围影像',icon:'yingxiangxiangqian',color:'rgba(245,158,11,0.06)',route:'/console/computing/basic' },
+  { id:'fusion',name:'影像融合',desc:'多光谱+全色融合，提升空间分辨率',icon:'yingxiangronghe',color:'rgba(37,99,235,0.06)',route:'/console/computing/basic' },
 ]
 
 const visibleBasic = computed(() => basicExpanded.value ? basic : basic.slice(0, 6))
@@ -101,15 +96,14 @@ const models:S[] = [
 const visibleModels = computed(() => models)
 
 function go(r:string){ router.push(r) }
+function goAlgorithmIntro(s:S){
+  router.push({ path: `/console/computing/basic/intro/${s.id}`, query: { title: s.name } })
+}
 </script>
 
 <style scoped>
 .chub { min-height:100%; padding:12px 16px 40px; }
 .inner { width:100%; }
-.page-head { text-align:center; margin-bottom:36px; }
-.page-head h1 { font-size:28px; font-weight:800; color:#1F2937; margin:0 0 6px; }
-.page-head p { font-size:19px; color:#6B7280; margin:0; }
-
 .sec { margin-bottom:32px; }
 .sec-head-card {
   position:relative; border-radius:16px; padding:22px 28px;

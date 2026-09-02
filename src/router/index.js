@@ -121,6 +121,7 @@ export const constantRoutes = [
     children: [
       { path: 'dashboard', component: () => import('@/views/console/DashboardPage.vue'), name: 'RsDashboard', hidden: true, meta: { title: '控制台', icon: 'weixing' } },
       { path: 'computing/basic', component: () => import('@/views/computing/AlgorithmServicePage.vue'), name: 'RsAlgorithm', meta: { title: '算法服务', icon: 'suanfafuwu' } },
+      { path: 'computing/basic/intro/:serviceId', component: () => import('@/views/computing/AlgorithmIntroPage.vue'), name: 'RsAlgorithmIntro', hidden: true, meta: { title: '算法介绍', activeMenu: '/console/computing/models' } },
       { path: 'computing/result/:taskId', component: () => import('@/views/computing/Result3DViewer.vue'), name: 'RsTaskResult3D', hidden: true, meta: { title: '任务结果', activeMenu: '/console/tasks' } },
       { path: 'computing/models', component: () => import('@/views/computing/ComputingHubPage.vue'), name: 'RsModels', meta: { title: '智能计算中心', icon: 'duomotaironghe' } },
       { path: 'computing/models/recognition', component: () => import('@/views/computing/models/RecognitionPage.vue'), name: 'RsRecognition', hidden: true, meta: { title: '地物识别', activeMenu: '/console/computing/models' } },

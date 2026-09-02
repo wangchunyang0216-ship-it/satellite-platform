@@ -1,14 +1,5 @@
 <template>
    <div class="app-container rs-profile">
-      <div class="profile-hero">
-         <div>
-            <p class="eyebrow">REMOTE SENSING ACCOUNT</p>
-            <h1>{{ centerTitle }}</h1>
-            <p>注册页只创建账号，实名信息、组织资料和遥感服务偏好在这里补全。使用受限功能时，可依据资料完整度进行提示。</p>
-         </div>
-         <el-tag :type="completionStatus.type" effect="dark" round>{{ completionStatus.text }}</el-tag>
-      </div>
-
       <el-row :gutter="20">
          <el-col :span="6" :xs="24">
             <el-card class="profile-card side-card">
@@ -19,8 +10,18 @@
                <p>{{ state.roleGroup || '普通用户' }} · {{ profileForm.email || state.user.email || '-' }}</p>
                <ul class="profile-list">
                   <li><svg-icon icon-class="user" />用户名称<span>{{ state.user.userName || '-' }}</span></li>
-                  <li><svg-icon icon-class="phone" />手机号码<span>{{ profileForm.phonenumber || '-' }}</span></li>
-                  <li><svg-icon icon-class="email" />用户邮箱<span>{{ profileForm.email || '-' }}</span></li>
+                  <li class="editable-row">
+                     <svg-icon icon-class="phone" />手机号码
+                     <el-input v-model.trim="profileForm.phonenumber" class="side-input" maxlength="11" placeholder="请输入手机号" />
+                  </li>
+                  <li class="editable-row">
+                     <svg-icon icon-class="email" />用户邮箱
+                     <el-input v-model.trim="profileForm.email" class="side-input" maxlength="50" placeholder="请输入邮箱" />
+                  </li>
+                  <li class="editable-row">
+                     <svg-icon icon-class="international" />所在地区
+                     <el-input v-model.trim="profileForm.region" class="side-input" placeholder="例如：北京" />
+                  </li>
                   <li><svg-icon icon-class="tree" />账号类型<span>{{ profileForm.accountType === 'enterprise' ? '组织机构' : '个人用户' }}</span></li>
                   <li><svg-icon icon-class="date" />创建日期<span>{{ state.user.createTime || '-' }}</span></li>
                </ul>
@@ -54,23 +55,6 @@
 
                <template v-if="selectedTab === 'profile'">
                   <el-form ref="profileRef" :model="profileForm" :rules="profileRules" label-position="top" class="completion-form">
-                     <div class="section-title">基础联系信息</div>
-                     <div class="form-grid">
-                        <el-form-item label="用户昵称" prop="nickName">
-                           <el-input v-model.trim="profileForm.nickName" placeholder="例如：遥感分析员" maxlength="30" />
-                        </el-form-item>
-                        <el-form-item label="手机号码" prop="phonenumber">
-                           <el-input v-model.trim="profileForm.phonenumber" placeholder="用于登录通知和找回账号" maxlength="11" />
-                        </el-form-item>
-                        <el-form-item label="邮箱" prop="email">
-                           <el-input v-model.trim="profileForm.email" placeholder="用于接收订单、任务和成果通知" maxlength="50" />
-                        </el-form-item>
-                        <el-form-item label="所在地区" prop="region">
-                           <el-input v-model.trim="profileForm.region" placeholder="例如：北京 / 华北区域 / 长三角" />
-                        </el-form-item>
-                     </div>
-
-                     <div class="section-title">实名与主体资料</div>
                      <div class="form-grid">
                         <el-form-item label="账号类型" prop="accountType">
                            <el-radio-group v-model="profileForm.accountType">
@@ -184,7 +168,6 @@ const profileForm = reactive({
   businessScope: ""
 })
 
-const centerTitle = computed(() => profileForm.accountType === "enterprise" ? "企业中心资料补全" : "个人中心资料补全")
 const completionItems = computed(() => [
   { label: "基础联系方式", done: !!(profileForm.nickName && profileForm.phonenumber && profileForm.email) },
   { label: "实名信息", done: profileForm.accountType === "personal" ? !!(profileForm.realName && profileForm.idCard) : !!profileForm.realName },
@@ -192,12 +175,6 @@ const completionItems = computed(() => [
   { label: "企业补充资料", done: profileForm.accountType === "personal" || !!(profileForm.organizationName && profileForm.creditCode && profileForm.legalPerson && profileForm.contactTitle && profileForm.registeredAddress && profileForm.businessScope) }
 ])
 const completionPercent = computed(() => Math.round(completionItems.value.filter(item => item.done).length / completionItems.value.length * 100))
-const completionStatus = computed(() => {
-  if (completionPercent.value >= 100) return { text: "资料已补全", type: "success" }
-  if (completionPercent.value >= 50) return { text: "继续完善中", type: "warning" }
-  return { text: "待补全", type: "info" }
-})
-
 const profileRules = {
   nickName: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
   phonenumber: [
@@ -435,6 +412,29 @@ onMounted(() => {
 .profile-list span {
   margin-left: auto;
   color: #0f172a;
+}
+
+.profile-list .editable-row {
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-list .side-input {
+  width: 150px;
+  margin-left: auto;
+}
+
+.profile-list .side-input :deep(.el-input__wrapper) {
+  min-height: 28px;
+  border-radius: 8px;
+  background: #f8fafc;
+  box-shadow: 0 0 0 1px #d8e0ea inset;
+}
+
+.profile-list .side-input :deep(.el-input__inner) {
+  height: 28px;
+  color: #0f172a;
+  text-align: right;
 }
 
 .progress-card {

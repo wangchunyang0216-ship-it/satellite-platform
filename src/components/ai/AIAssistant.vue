@@ -1,5 +1,5 @@
 <template>
-  <div class="ai-assistant" :class="{ open: isOpen, minimized: isMinimized }">
+  <div class="ai-assistant" :class="{ open: isOpen, minimized: isMinimized, spotlight: isSpotlight }">
     <!-- 浮动触发按钮 -->
     <div class="ai-trigger" @click="toggle" v-show="!isOpen">
       <div class="ai-trigger-icon">
@@ -19,7 +19,7 @@
           <span class="ai-mode-tag" :class="aiMode">{{ aiMode === 'llm' ? 'AI' : '教程' }}</span>
         </div>
         <div class="ai-header-right">
-          <el-button link @click="isMinimized = true" title="最小化">
+          <el-button link @click="minimize" title="最小化">
             <el-icon :size="16"><Minus /></el-icon>
           </el-button>
           <el-button link @click="close" title="关闭">
@@ -108,17 +108,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, watch } from 'vue'
+import { ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { ChatDotRound, Cpu, Minus, Close, User, Promotion } from '@element-plus/icons-vue'
 import { aiApi, type ChatMessage } from '@/api/ai'
 
 const isOpen = ref(false)
 const isMinimized = ref(false)
+const isSpotlight = ref(false)
 const loading = ref(false)
 const input = ref('')
 const messages = ref<Array<{ role: string; content: string }>>([])
 const msgContainer = ref<HTMLElement>()
 const unreadCount = ref(0)
+let autoCloseTimer: ReturnType<typeof setTimeout> | null = null
 const suggestions = ref<string[]>([
   '如何检索卫星数据？',
   '怎么计算 NDVI 植被指数？',
@@ -129,6 +131,8 @@ const aiMode = ref('教程')
 
 // 从后端加载推荐问题
 onMounted(async () => {
+  window.addEventListener('rs-ai-assistant-open', handleAutoOpen as EventListener)
+
   try {
     const statusRes = await aiApi.getStatus()
     aiMode.value = (statusRes.data as any)?.data?.mode || '教程'
@@ -143,15 +147,61 @@ onMounted(async () => {
 })
 
 function toggle() {
+  clearAutoCloseTimer()
+  isSpotlight.value = false
   isOpen.value = true
   isMinimized.value = false
   unreadCount.value = 0
 }
 
 function close() {
+  clearAutoCloseTimer()
+  isSpotlight.value = false
   isOpen.value = false
   isMinimized.value = false
 }
+
+function minimize() {
+  clearAutoCloseTimer()
+  isSpotlight.value = false
+  isMinimized.value = true
+}
+
+function clearAutoCloseTimer() {
+  if (autoCloseTimer) {
+    clearTimeout(autoCloseTimer)
+    autoCloseTimer = null
+  }
+}
+
+function handleAutoOpen(event: CustomEvent<{ autoCloseMs?: number }>) {
+  clearAutoCloseTimer()
+  isOpen.value = true
+  isMinimized.value = false
+  isSpotlight.value = true
+  unreadCount.value = 0
+
+  if (!messages.value.length) {
+    messages.value.push({
+      role: 'assistant',
+      content: '欢迎进入控制台，我是 AI 教程助手。你可以问我怎么检索卫星数据、提交算法任务、查看任务结果。关闭后我会回到右下角，需要时可以随时点开继续使用。'
+    })
+    scrollToBottom()
+  }
+
+  const autoCloseMs = event.detail?.autoCloseMs ?? 30000
+  autoCloseTimer = setTimeout(() => {
+    isOpen.value = false
+    isMinimized.value = false
+    isSpotlight.value = false
+    autoCloseTimer = null
+  }, autoCloseMs)
+}
+
+onBeforeUnmount(() => {
+  clearAutoCloseTimer()
+  window.removeEventListener('rs-ai-assistant-open', handleAutoOpen as EventListener)
+})
 
 function scrollToBottom() {
   nextTick(() => {
@@ -311,6 +361,40 @@ function renderMarkdown(text: string): string {
   flex-direction: column;
   overflow: hidden;
   border: 1px solid #E5E7EB;
+}
+
+.ai-assistant.spotlight {
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.ai-assistant.spotlight::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
+
+.ai-assistant.spotlight .ai-panel {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  width: min(460px, calc(100vw - 40px));
+  height: 560px;
+  border: 1px solid rgba(37, 99, 235, 0.28);
+  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.32), 0 0 0 6px rgba(37, 99, 235, 0.08);
+  pointer-events: auto;
+}
+
+.ai-assistant.spotlight .ai-header {
+  background: linear-gradient(135deg, #f8fbff, #eef5ff);
 }
 
 /* 头部 */

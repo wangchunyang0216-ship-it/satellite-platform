@@ -1,14 +1,5 @@
 <template>
   <div class="profile-page">
-    <div class="profile-hero">
-      <div>
-        <p class="eyebrow">USER PROFILE CENTER</p>
-        <h1>个人中心</h1>
-        <p>补全实名资料、组织信息和遥感服务偏好。注册页只负责开户，这里负责把账号变成可使用更多功能的完整账号。</p>
-      </div>
-      <el-tag :type="completionStatus.type" effect="dark" round>{{ completionStatus.text }}</el-tag>
-    </div>
-
     <el-row :gutter="18">
       <el-col :xs="24" :lg="8">
         <section class="card account-card">
@@ -22,6 +13,17 @@
 
           <el-descriptions :column="1" border size="small" class="account-desc">
             <el-descriptions-item label="登录账号">{{ userStore.user?.username || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="用户昵称">{{ profileForm.displayName || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="手机号码">
+              <el-input v-model.trim="profileForm.phone" class="side-desc-input" placeholder="请输入手机号" />
+            </el-descriptions-item>
+            <el-descriptions-item label="联系邮箱">
+              <el-input v-model.trim="profileForm.email" class="side-desc-input" placeholder="请输入邮箱" />
+            </el-descriptions-item>
+            <el-descriptions-item label="所在地区">
+              <el-input v-model.trim="profileForm.region" class="side-desc-input" placeholder="例如：北京" />
+            </el-descriptions-item>
+            <el-descriptions-item label="账号类型">{{ profileForm.accountType === 'enterprise' ? '组织机构' : '个人用户' }}</el-descriptions-item>
             <el-descriptions-item label="所属单位">{{ userStore.user?.company || profileForm.organizationName || '-' }}</el-descriptions-item>
             <el-descriptions-item label="API Key">{{ userStore.user?.apiKey || '暂无' }}</el-descriptions-item>
           </el-descriptions>
@@ -56,29 +58,11 @@
           <div class="form-head">
             <div>
               <h2>资料补全</h2>
-              <p>先保存基础资料；涉及购买数据、提交计算任务、成果交付时，可根据这里的信息做功能前校验。</p>
             </div>
             <el-button plain @click="resetForm">重置</el-button>
           </div>
 
           <el-form ref="profileRef" :model="profileForm" :rules="profileRules" label-position="top">
-            <div class="section-title">基础联系信息</div>
-            <div class="form-grid">
-              <el-form-item label="用户昵称" prop="displayName">
-                <el-input v-model.trim="profileForm.displayName" placeholder="例如：遥感分析员" />
-              </el-form-item>
-              <el-form-item label="手机号" prop="phone">
-                <el-input v-model.trim="profileForm.phone" placeholder="用于通知、验证和找回账号" />
-              </el-form-item>
-              <el-form-item label="联系邮箱" prop="email">
-                <el-input v-model.trim="profileForm.email" placeholder="用于接收订单、任务和成果通知" />
-              </el-form-item>
-              <el-form-item label="所在地区" prop="region">
-                <el-input v-model.trim="profileForm.region" placeholder="例如：北京 / 长三角 / 华北区域" />
-              </el-form-item>
-            </div>
-
-            <div class="section-title">实名与组织资料</div>
             <div class="form-grid">
               <el-form-item label="账号类型" prop="accountType">
                 <el-radio-group v-model="profileForm.accountType">
@@ -229,12 +213,6 @@ const completionItems = computed(() => [
 const completionPercent = computed(() => {
   const doneCount = completionItems.value.filter(item => item.done).length
   return Math.round((doneCount / completionItems.value.length) * 100)
-})
-
-const completionStatus = computed(() => {
-  if (completionPercent.value >= 100) return { text: '资料已补全', type: 'success' }
-  if (completionPercent.value >= 50) return { text: '继续完善中', type: 'warning' }
-  return { text: '待补全', type: 'info' }
 })
 
 function validateOrganization(rule: unknown, value: string, callback: (error?: Error) => void) {
@@ -397,6 +375,22 @@ function resetForm() {
   width: 92px;
   color: #64748b;
   background: #f8fafc;
+}
+
+.side-desc-input {
+  width: 100%;
+}
+
+.side-desc-input :deep(.el-input__wrapper) {
+  min-height: 28px;
+  border-radius: 8px;
+  background: #f8fafc;
+  box-shadow: 0 0 0 1px #d8e0ea inset;
+}
+
+.side-desc-input :deep(.el-input__inner) {
+  height: 28px;
+  color: #0f172a;
 }
 
 .card-title-row,

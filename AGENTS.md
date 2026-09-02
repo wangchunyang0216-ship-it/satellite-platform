@@ -1,6 +1,8 @@
 ﻿# AGENTS.md — data-center-vue 交接说明
 
 你正在维护 `E:\Projects\New_Project\data-center-vue`。当前 shell 默认目录可能是 `E:\Projects\New_Project\satellite-platform`，但用户真正要改的是 `data-center-vue`。操作文件时优先使用绝对路径，避免改错项目。
+ 
+## 已经添加了postcss-px-to-viewport插件，把px转换成了vx
 
 ## 用户偏好
 

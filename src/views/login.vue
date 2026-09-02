@@ -283,6 +283,7 @@ function doLogin() {
   }
 
   userStore.login(loginForm.value).then(() => {
+    sessionStorage.removeItem("rs-ai-assistant-login-prompted")
     const query = route.query
     const otherQueryParams = Object.keys(query).reduce((acc, cur) => {
       if (cur !== "redirect") {
