@@ -1,6 +1,5 @@
 <template>
   <div class="page">
-    <PageHeader title="任务管理中心" desc="统一管理所有已提交的计算任务，查看进度和历史" />
 
     <el-card class="filter-card" shadow="never">
       <el-form :model="filters" inline>
@@ -18,13 +17,14 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="filters.keyword" placeholder="搜索任务ID" clearable style="width:200px">
+          <el-input v-model="filters.keyword" placeholder="搜索任务" clearable style="width:200px">
             <template #prefix><el-icon><Search /></el-icon></template>
           </el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="loadTasks">查询</el-button>
           <el-button @click="handleReset">重置</el-button>
+          <el-button type="danger" @click="handleClearAll" :disabled="total === 0">清空全部</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -32,12 +32,9 @@
     <el-card shadow="never" class="table-card">
       <template #header>
         <div class="table-header">
-          <span class="card-title">任务列表</span>
+          <span class="card-title">任务</span>
           <span class="task-count">共 {{ total }} 个任务</span>
           <div class="batch-actions">
-            <el-button size="small" type="danger" @click="handleClearAll" :disabled="total === 0">
-              清空全部
-            </el-button>
           </div>
         </div>
       </template>

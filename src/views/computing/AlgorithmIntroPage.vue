@@ -1,10 +1,13 @@
 <template>
   <div class="intro-page">
-    <div class="intro-hero">
+        <!-- 返回按钮独立放在最顶部 -->
+    <div class="back-bar">
       <button class="back-btn" type="button" @click="router.push('/console/computing/models')">
         <el-icon><ArrowLeft /></el-icon>
-        返回智能计算中心
+        返回
       </button>
+      </div>
+    <div class="intro-hero">
       <div class="hero-main">
         <span class="hero-ico" :style="{ background: service.color }">
           <svg-icon :icon-class="service.icon" />
@@ -245,9 +248,26 @@ function startUse() {
   background:#fff; border:1px solid #E5E7EB; border-radius:18px; padding:22px 24px;
   box-shadow:0 8px 24px rgba(15,23,42,.05);
 }
+/* 新增：顶部返回栏 - 极小且不占空间 */
+.back-bar {
+  display: flex;
+  justify-content: flex-start;
+  padding: 4px 0 8px 0;  /* 只保留极少的内边距 */
+  margin-bottom: 0;       /* 与下方内容紧密衔接 */
+}
 .back-btn {
-  border:0; background:#F3F4F6; color:#475569; border-radius:999px; padding:8px 12px;
-  display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0;
+  border:0; 
+  background:transparent;
+  color:#647488;
+  border-radius:6px;
+  padding:4px 8px;
+  display:flex; 
+  align-items:center; 
+  gap: 4px; 
+  cursor:pointer; 
+  font-size:13px;
+  transition:color 0.2s;
+  flex-shrink:0;
 }
 .back-btn:hover { color:#2563EB; background:#EFF6FF; }
 .hero-main { display:flex; align-items:center; gap:18px; flex:1; min-width:0; }

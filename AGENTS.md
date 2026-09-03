@@ -2,7 +2,15 @@
 
 你正在维护 `E:\Projects\New_Project\data-center-vue`。当前 shell 默认目录可能是 `E:\Projects\New_Project\satellite-platform`，但用户真正要改的是 `data-center-vue`。操作文件时优先使用绝对路径，避免改错项目。
  
-## 已经添加了postcss-px-to-viewport插件，把px转换成了vx
+## px 转 vw（postcss-px-to-viewport）
+
+已接入 `postcss-px-to-viewport@1.1.1`，把遥感业务页面 px 转成 vw（1920 设计稿），只影响遥感业务，排除 Element Plus / Cesium / Leaflet / RuoYi 框架样式。
+
+- 配置：`postcss.config.cjs`（用 `.cjs` 是因为 package.json 是 `"type": "module"`）。
+- 关键坑：`vite.config.js` 里不能再写内联 `css.postcss`——Vite 6 只要存在内联对象就会完全忽略 `postcss.config.cjs`。原来的 charset-removal 插件已并入 `postcss.config.cjs`，`vite.config.js` 里的内联 postcss 已删除。
+- 排除机制：`/node_modules/i`（三方库）+ `selectorBlackList`（`.el-`/`.cesium-`/`.leaflet-` 等）+ `exclude` 正则（ruoyi/sidebar 等框架 scss）。
+- `minPixelValue: 1` + `propList` 里 `!border`/`!border-width`/`!box-shadow`，保证 1px 边框不转。
+- `rs-theme.scss`（遥感主题，含 `--el-*` 字号变量）在转换范围内，会导致 Element Plus 组件字号随视口缩放——这是有意为之；若想让 EP 组件固定字号需额外排除。
 
 ## 用户偏好
 
@@ -65,6 +73,7 @@ git status --short
 git add -A
 git commit -m "feat: update remote sensing platform UI and console"
 ```
+最后还要有一个git push
 
 提交后确认工作区状态和最新提交：
 
@@ -94,6 +103,12 @@ git commit -m "style: refine login page"
 - `/console/data` 数据中心。
 - `/console/data/satellite/:satelliteId` 单卫星数据页。
 - `/console/computing/basic` 算法服务。
+- `/console/computing/basic/intro/:serviceId` 算法介绍（9 个算法服务各自跳转页）。
+- `/console/computing/models` 智能计算中心（算法服务 + 遥感大模型入口）。
+- `/console/computing/models/recognition` 地物识别。
+- `/console/computing/models/detection` 目标检测。
+- `/console/computing/models/change-detection` 变化检测。
+- `/console/computing/models/multimodal-fusion` 多模态融合。
 - `/console/tasks` 任务中心。
 - `/console/computing/result/:taskId` 单任务 3D 结果。
 
@@ -236,7 +251,63 @@ git commit -m "style: refine login page"
 
 注意：mock 任务是展示用。如果用户点击 mock 任务加载 TIF 失败，优先处理方式是禁用 mock 任务的“加载”按钮或给 mock 任务接一个固定可用的演示影像，不要让它假装真实后端数据。
 
-### 7. UI/UX Pro Max skill
+### 7. 智能计算中心（九个算法服务跳转页 + 遥感大模型）
+
+智能计算中心首页（`/console/computing/models`）是「算法服务（9 个）+ 遥感大模型（4 个）」两个卡片区的入口页。
+
+相关文件：
+
+- `src/views/computing/ComputingHubPage.vue` — 智能计算中心首页。
+- `src/views/computing/AlgorithmIntroPage.vue` — 算法介绍页（9 个算法服务共用的跳转详情页）。
+- `src/views/computing/AlgorithmServicePage.vue` — 算法服务功能使用页（路由 `/console/computing/basic`）。
+- `src/views/computing/models/RecognitionPage.vue` — 地物识别（遥感大模型）。
+- `src/views/computing/models/TargetDetectionPage.vue` — 目标检测。
+- `src/views/computing/models/ChangeDetectionPage.vue` — 变化检测。
+- `src/views/computing/models/MultiModalFusionPage.vue` — 多模态融合。
+- `src/components/common/PageHeader.vue` — 四个大模型详情页的统一页头组件。
+- `src/router/index.js` — 相关路由集中在 `/console` 下。
+
+跳转关系：
+
+- `ComputingHubPage.vue`：
+  - `basic[]` 数组（约 76-86 行）定义 9 个算法服务，点击 `goAlgorithmIntro()` 跳 `/console/computing/basic/intro/:serviceId?title=名字`。
+  - `models[]` 数组（约 90-95 行）定义 4 个遥感大模型，点击 `go(route)` 跳到各自详情页。
+- `AlgorithmIntroPage.vue`：
+  - `intros` 字典（约 92-228 行）按 `serviceId` 存 9 套介绍文案。
+  - 顶部「返回智能计算中心」→ `/console/computing/models`。
+  - 「进入功能使用」→ `/console/computing/basic?service=:id`。
+- `AlgorithmServicePage.vue`：`services` 数组（约 263 行）定义同一批 9 个服务。
+
+九个算法服务（id / 名称 / 类别）：
+
+| id | 名称 | 类别 |
+|---|---|---|
+| calibration | 辐射定标 | 辐射校正 |
+| atmospheric | 大气校正 | 辐射校正 |
+| geometric | 几何校正 | 几何校正 |
+| cloud_detection | 云检测 | 影像预处理 |
+| clip | 影像裁剪 | 影像预处理 |
+| ndvi | NDVI 植被指数 | 指数计算 |
+| spectral_index | 光谱指数扩展 | 指数计算 |
+| mosaic | 影像镶嵌 | 影像处理 |
+| fusion | 影像融合 | 影像处理 |
+
+四个遥感大模型详情页（都在 `src/views/computing/models/`）：
+
+| 页面 | 路由 | 模型 |
+|---|---|---|
+| 地物识别 | `/console/computing/models/recognition` | U-Net++ / DeepLabV3+ / SegFormer |
+| 目标检测 | `/console/computing/models/detection` | YOLOv8 / Faster R-CNN / DETR |
+| 变化检测 | `/console/computing/models/change-detection` | ChangeFormer / Siamese / BIT |
+| 多模态融合 | `/console/computing/models/multimodal-fusion` | Cross-Attention Mamba / Transformer / CNN |
+
+注意：
+
+- 这 9 个服务的 `id` 在三处出现，必须保持一致：`ComputingHubPage.vue` 的 `basic[]`、`AlgorithmIntroPage.vue` 的 `intros`、`AlgorithmServicePage.vue` 的 `services` 和 `serviceLabel`。改一处要同步另外几处。
+- `ComputingHubPage.vue` 的 `basic[]` 里 `route` 字段虽写 `/console/computing/basic`，但卡片点击实际走 `goAlgorithmIntro()` 跳介绍页，`route` 字段当前没直接用于跳转。
+- 四个大模型详情页目前是带参数表单 + 本地 mock 结果（`run()` 里 `setTimeout`，未接真实后端）；只有 `AlgorithmServicePage` / `Result3DViewer` / `TaskCenterPage` 真正调用了 `@/api/compute`。
+
+### 8. UI/UX Pro Max skill
 
 已通过官方 CLI 接入 `https://github.com/nextlevelbuilder/ui-ux-pro-max-skill`：
 
