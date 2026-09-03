@@ -2,26 +2,26 @@
   <div class="page">
 
     <el-card class="filter-card" shadow="never">
-      <el-form :model="filters" inline>
+      <el-form :model="filters" class="filter-form">
         <el-form-item label="算法服务">
           <el-select v-model="filters.service" placeholder="全部" clearable style="width:160px">
             <el-option v-for="s in serviceOptions" :key="s.value" :label="s.label" :value="s.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="任务状态">
-          <el-select v-model="filters.status" placeholder="全部" clearable style="width:120px">
+          <el-select v-model="filters.status" placeholder="全部" clearable style="width:140px">
             <el-option label="排队中" value="pending" />
             <el-option label="处理中" value="running" />
             <el-option label="已完成" value="completed" />
             <el-option label="失败" value="failed" />
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="filters.keyword" placeholder="搜索任务" clearable style="width:200px">
+        <el-form-item label="搜索">
+          <el-input v-model="filters.keyword" placeholder="任务"clearable style="width:140px">
             <template #prefix><el-icon><Search /></el-icon></template>
           </el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="action-group">
           <el-button type="primary" @click="loadTasks">查询</el-button>
           <el-button @click="handleReset">重置</el-button>
           <el-button type="danger" @click="handleClearAll" :disabled="total === 0">清空全部</el-button>
@@ -210,6 +210,30 @@ onMounted(() => loadTasks())
 <style scoped>
 .page { flex:1; display:flex; flex-direction:column; padding:12px 16px 24px; overflow-y:auto; min-height:0; height:100%; }
 .filter-card { margin-bottom:16px; }
+.filter-card :deep(.el-card__body) {
+  padding: 16px 20px;
+}
+
+.filter-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  width: 100%;
+}
+
+.filter-form .el-form-item {
+  margin-bottom: 0;
+  margin-right: 0;
+  flex-shrink: 0;
+}
+
+.filter-form .action-group {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
 .table-card { flex:1; min-height:0; margin-bottom:0; display:flex; flex-direction:column; }
 .table-card :deep(.el-card__body) { flex:1; min-height:0; display:flex; flex-direction:column; padding:0 20px 20px; }
 .table-header { display:flex; align-items:center; gap:16px; }
