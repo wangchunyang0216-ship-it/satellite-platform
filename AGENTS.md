@@ -59,6 +59,8 @@ python -m venv .venv
 Windows 下优先使用 `npm.cmd`，不要只写 `npm`。
 
 ## 提交代码流程
+方案一：一条命令完成添加+提交+推送（写脚本）:
+git add -A && git commit -m "feat: update" && git push
 
 提交前先确认当前仓库和改动范围：
 
@@ -193,6 +195,9 @@ git commit -m "style: refine login page"
 - 个人注册字段保留手机号、邮箱、昵称、密码等基础信息。
 - 更完整的个人/组织信息放到个人中心补全，不在注册页一次性填完。
 - 注册提交仍兼容当前后端 `/auth/register`：核心字段为 `username/password/email/company`，额外资料放在 `accountType/profile/phone` 中。
+- 注册页邮箱与邮箱验证码为同组并排字段，密码与确认密码为同组并排字段；验证码按钮使用独立布局，保证文案完整显示。
+- 注册提交会携带 `emailCode`，前端校验要求为 6 位数字；如后端启用邮箱验证码校验，前后端字段名必须保持一致。
+- 注册页采用三文件职责拆分：`src/views/register.vue` 仅保留 template，`src/views/register.js` 负责注册状态、校验、验证码和提交逻辑，`src/assets/styles/register.scss` 负责页面样式；后续新增注册页内容时按此目录规范维护，避免把大段 CSS 或 JavaScript 混入 template。
 
 ### 4. 菜单/路由
 

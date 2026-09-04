@@ -44,7 +44,7 @@ export const constantRoutes = [
   },
   {
     path: '/register',
-    component: () => import('@/views/register'),
+    component: () => import('@/views/register.vue'),
     hidden: true
   },
   {
