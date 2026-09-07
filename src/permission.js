@@ -12,7 +12,7 @@ import usePermissionStore from '@/store/modules/permission'
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/register', '/rs/home', '/scenarios/**', '/', '/console', '/console/**', '/rs-admin', '/rs-admin/**']
+const whiteList = ['/login', '/register', '/rs/home', '/rs/guide', '/scenarios/**', '/', '/console', '/console/**', '/rs-admin', '/rs-admin/**']
 
 const isWhiteList = (path) => {
   return whiteList.some(pattern => isPathMatch(pattern, path))
@@ -32,7 +32,7 @@ router.beforeEach(async (to, from) => {
     const isLock = useLockStore().isLock
     if (to.path === '/login') {
       NProgress.done()
-      return { path: '/' }
+      return { path: '/console/dashboard' }
     }
     if (isWhiteList(to.path)) {
       return true
@@ -43,7 +43,7 @@ router.beforeEach(async (to, from) => {
     }
     if (!isLock && to.path === '/lock') {
       NProgress.done()
-      return { path: '/' }
+      return { path: '/console/dashboard' }
     }
     if (useUserStore().roles.length === 0) {
       isRelogin.show = true

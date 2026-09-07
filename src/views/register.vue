@@ -21,18 +21,23 @@
           <div class="rv-orbit orbit-a"></div>
           <div class="rv-orbit orbit-b"></div>
           <div class="rv-content">
+            <div class="rv-title">请选择注册类型</div>
             <div class="rv-points">
-              <article>
-                <strong>企业</strong>
+              <article
+                :class="{ active: registerForm.accountType === 'enterprise' }"
+                role="button"
+                @click="registerForm.accountType = 'enterprise'"
+              >
+                <strong>企业注册</strong>
                 <span>组织空间 / 多成员协同 / 更高任务额度</span>
               </article>
-              <article>
-                <strong>个人</strong>
+              <article
+                :class="{ active: registerForm.accountType === 'personal' }"
+                role="button"
+                @click="registerForm.accountType = 'personal'"
+              >
+                <strong>个人注册</strong>
                 <span>快速试用 / 科研学习 / 轻量分析验证</span>
-              </article>
-              <article>
-                <strong>资料审核</strong>
-                <span>联系方式 / 使用场景 / 合规说明一次补全</span>
               </article>
             </div>
           </div>
@@ -71,122 +76,71 @@
             label-position="top"
             class="register-form"
           >
-            <el-form-item prop="accountType" class="type-item">
-              <el-segmented v-model="registerForm.accountType" :options="accountTypeOptions" block />
-            </el-form-item>
-
             <div class="section-title">
               <el-icon><UserFilled /></el-icon>
               基础注册信息
             </div>
 
             <template v-if="isEnterprise">
-              <div class="form-grid">
-                <el-form-item label="组织机构名称" prop="companyName">
-                  <el-input v-model.trim="registerForm.companyName" size="large" placeholder="请输入组织或单位名称">
-                    <template #prefix><el-icon><OfficeBuilding /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="管理员手机号" prop="phone">
-                  <el-input v-model.trim="registerForm.phone" size="large" placeholder="用于登录通知和后续资料补全">
-                    <template #prefix><el-icon><User /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                <div class="field-group">
-                <el-form-item label="联系邮箱" prop="email">
-                  <el-input v-model.trim="registerForm.email" size="large" type="email" autocomplete="email" placeholder="用于接收验证码与通知">
-                    <template #prefix><el-icon><Message /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="邮箱验证码" prop="emailCode">
-                  <div class="verification-row">
-                    <el-input v-model.trim="registerForm.emailCode" size="large" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="请输入 6 位验证码" />
-                    <el-button class="code-button" :disabled="codeCountdown > 0" @click="sendEmailCode">{{ codeCountdown > 0 ? `${codeCountdown}s 后重发` : '获取验证码' }}</el-button>
-                  </div>
-                </el-form-item>
-                </div>
-                <div class="field-group">
-                <el-form-item label="登录密码" prop="password">
-                  <el-input
-                    v-model="registerForm.password"
-                    size="large"
-                    type="password"
-                    show-password
-                    placeholder="至少 6 位，建议包含字母和数字"
-                    @keyup.enter="handleRegister"
-                  >
-                    <template #prefix><el-icon><Lock /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="确认密码" prop="confirmPassword">
-                  <el-input
-                    v-model="registerForm.confirmPassword"
-                    size="large"
-                    type="password"
-                    show-password
-                    placeholder="再次输入登录密码"
-                    @keyup.enter="handleRegister"
-                  >
-                    <template #prefix><el-icon><Lock /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                </div>
-              </div>
+              <el-form-item label="组织机构名称" prop="companyName">
+                <el-input v-model.trim="registerForm.companyName" size="large" placeholder="请输入组织或单位名称">
+                  <template #prefix><el-icon><OfficeBuilding /></el-icon></template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="管理员手机号" prop="phone">
+                <el-input v-model.trim="registerForm.phone" size="large" placeholder="用于登录通知和后续资料补全">
+                  <template #prefix><el-icon><User /></el-icon></template>
+                </el-input>
+              </el-form-item>
+            </template>
+            <template v-else>
+              <el-form-item label="手机号" prop="phone">
+                <el-input v-model.trim="registerForm.phone" size="large" placeholder="用于登录通知和找回账号">
+                  <template #prefix><el-icon><User /></el-icon></template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="用户昵称" prop="displayName">
+                <el-input v-model.trim="registerForm.displayName" size="large" placeholder="例如：张同学、遥感分析员、项目成员">
+                  <template #prefix><el-icon><UserFilled /></el-icon></template>
+                </el-input>
+              </el-form-item>
             </template>
 
-            <template v-else>
-              <div class="form-grid">
-                <el-form-item label="手机号" prop="phone">
-                  <el-input v-model.trim="registerForm.phone" size="large" placeholder="用于登录通知和找回账号">
-                    <template #prefix><el-icon><User /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                <div class="field-group">
-                <el-form-item label="联系邮箱" prop="email">
-                  <el-input v-model.trim="registerForm.email" size="large" type="email" autocomplete="email" placeholder="用于接收验证码与通知">
-                    <template #prefix><el-icon><Message /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="邮箱验证码" prop="emailCode">
-                  <div class="verification-row">
-                    <el-input v-model.trim="registerForm.emailCode" size="large" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="请输入 6 位验证码" />
-                    <el-button class="code-button" :disabled="codeCountdown > 0" @click="sendEmailCode">{{ codeCountdown > 0 ? `${codeCountdown}s 后重发` : '获取验证码' }}</el-button>
-                  </div>
-                </el-form-item>
-                </div>
-                <div class="field-group">
-                <el-form-item label="登录密码" prop="password">
-                  <el-input
-                    v-model="registerForm.password"
-                    size="large"
-                    type="password"
-                    show-password
-                    placeholder="至少 6 位，建议包含字母和数字"
-                    @keyup.enter="handleRegister"
-                  >
-                    <template #prefix><el-icon><Lock /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="确认密码" prop="confirmPassword">
-                  <el-input
-                    v-model="registerForm.confirmPassword"
-                    size="large"
-                    type="password"
-                    show-password
-                    placeholder="再次输入登录密码"
-                    @keyup.enter="handleRegister"
-                  >
-                    <template #prefix><el-icon><Lock /></el-icon></template>
-                  </el-input>
-                </el-form-item>
-                </div>
-                <el-form-item label="用户昵称" prop="displayName" class="full-row">
-                  <el-input v-model.trim="registerForm.displayName" size="large" placeholder="例如：张同学、遥感分析员、项目成员">
-                    <template #prefix><el-icon><UserFilled /></el-icon></template>
-                  </el-input>
-                </el-form-item>
+            <el-form-item label="联系邮箱" prop="email">
+              <el-input v-model.trim="registerForm.email" size="large" type="email" autocomplete="email" placeholder="用于接收验证码与通知">
+                <template #prefix><el-icon><Message /></el-icon></template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="登录密码" prop="password">
+              <el-input
+                v-model="registerForm.password"
+                size="large"
+                type="password"
+                show-password
+                placeholder="至少 6 位，建议包含字母和数字"
+                @keyup.enter="handleRegister"
+              >
+                <template #prefix><el-icon><Lock /></el-icon></template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="confirmPassword">
+              <el-input
+                v-model="registerForm.confirmPassword"
+                size="large"
+                type="password"
+                show-password
+                placeholder="再次输入登录密码"
+                @keyup.enter="handleRegister"
+              >
+                <template #prefix><el-icon><Lock /></el-icon></template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="邮箱验证码" prop="emailCode">
+              <div class="verification-row">
+                <el-input v-model.trim="registerForm.emailCode" size="large" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="请输入 6 位验证码" />
+                <el-button class="code-button" :disabled="codeCountdown > 0" @click="sendEmailCode">{{ codeCountdown > 0 ? `${codeCountdown}s 后重发` : '获取验证码' }}</el-button>
               </div>
-            </template>
+            </el-form-item>
 
             <el-form-item prop="agreement" class="agreement-item">
               <el-checkbox v-model="registerForm.agreement">

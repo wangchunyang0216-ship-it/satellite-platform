@@ -13,7 +13,7 @@
               </div>
             </div>
           </div>
-          <p class="sec-desc">成熟的遥感数据处理算法，涵盖辐射校正、影像预处理、指数计算与影像处理四大类。</p>
+          <p class="sec-desc">集成成熟遥感处理算法，覆盖辐射校正、影像预处理、指数计算、影像处理四大类。</p>
         </div>
         <div class="svc-grid">
           <div v-for="s in visibleBasic" :key="s.id" class="card svc-item" @click="goAlgorithmIntro(s)">
@@ -40,7 +40,7 @@
               </div>
             </div>
           </div>
-          <p class="sec-desc">基于前沿深度学习架构的遥感智能分析，覆盖地物识别、目标检测、变化检测与多模态融合四大能力。</p>
+          <p class="sec-desc">依托深度学习架构开展遥感智能分析，支持地物识别、目标检测、变化检测及多模态融合。</p>
         </div>
         <div class="model-grid">
           <div v-for="m in visibleModels" :key="m.id" class="card model-card" @click="go(m.route)">

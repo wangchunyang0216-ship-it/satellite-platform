@@ -2,7 +2,7 @@
   <div class="data-center">
     <section class="hero">
       <div class="hero-heading">
-        <div><span class="eyebrow">SATELLITE DATA CENTER</span><h1>数据中心</h1><p>先搜索或选择目标卫星，再进入独立目录检索该卫星的影像数据。</p></div>
+        <div><span class="eyebrow">SATELLITE DATA CENTER</span><h1>数据中心</h1><p>选择目标卫星，进入对应目录检索影像数据。</p></div>
       </div>
       <div class="search-tools">
       <el-autocomplete v-model="keyword" :fetch-suggestions="fetchSuggestions" placeholder="搜索卫星、传感器、影像编号或覆盖区域" clearable size="large" class="search" @select="selectSuggestion" @keyup.enter="search">
@@ -35,7 +35,7 @@
 
     <section v-if="!hasSearched" class="fleet-section">
       <div class="section-title">
-        <div><h2>在轨卫星舰队</h2><p>选择一颗卫星，进入它的专属数据目录</p></div>
+        <div><h2>在轨卫星舰队</h2><p>选定卫星，进入其专属数据目录。</p></div>
         <span>{{ satellites.length }} 颗在轨卫星</span>
       </div>
       <div class="fleet">

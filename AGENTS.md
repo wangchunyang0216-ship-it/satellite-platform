@@ -197,7 +197,7 @@ git commit -m "style: refine login page"
 - 注册提交仍兼容当前后端 `/auth/register`：核心字段为 `username/password/email/company`，额外资料放在 `accountType/profile/phone` 中。
 - 注册页邮箱与邮箱验证码为同组并排字段，密码与确认密码为同组并排字段；验证码按钮使用独立布局，保证文案完整显示。
 - 注册提交会携带 `emailCode`，前端校验要求为 6 位数字；如后端启用邮箱验证码校验，前后端字段名必须保持一致。
-- 注册页采用三文件职责拆分：`src/views/register.vue` 仅保留 template，`src/views/register.js` 负责注册状态、校验、验证码和提交逻辑，`src/assets/styles/register.scss` 负责页面样式；后续新增注册页内容时按此目录规范维护，避免把大段 CSS 或 JavaScript 混入 template。
+- `src/views/register.vue` 的 template、script、style 已按 Vue SFC 区块分离；新增字段组样式统一放在该文件的 `<style scoped lang="scss">` 中，后续不要把大段行内 style 混入 template。
 
 ### 4. 菜单/路由
 

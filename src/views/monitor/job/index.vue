@@ -10,8 +10,8 @@
                @keyup.enter="handleQuery"
             />
          </el-form-item>
-         <el-form-item label="任务组名" prop="jobGroup">
-            <el-select v-model="queryParams.jobGroup" placeholder="请选择任务组名" clearable style="width: 200px">
+         <el-form-item label="任务分组" prop="jobGroup">
+            <el-select v-model="queryParams.jobGroup" placeholder="请选择任务分组" clearable style="width: 200px">
                <el-option
                   v-for="dict in sys_job_group"
                   :key="dict.value"
@@ -95,7 +95,7 @@
                <a class="link-type" style="cursor:pointer" @click="handleView(scope.row)">{{ scope.row.jobName }}</a>
             </template>
          </el-table-column>
-         <el-table-column label="任务组名" align="center" prop="jobGroup">
+         <el-table-column label="任务分组" align="center" prop="jobGroup">
             <template #default="scope">
                <dict-tag :options="sys_job_group" :value="scope.row.jobGroup" />
             </template>

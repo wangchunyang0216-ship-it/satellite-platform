@@ -84,6 +84,12 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
+.header-actions :deep(.el-button.is-text:hover),
+.header-actions :deep(.el-button.is-text:focus) {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
 .header-actions :deep(.el-button:not(.is-text)) {
   border-color: rgba(255, 255, 255, 0.32);
   color: #fff;
@@ -353,17 +359,6 @@
   color: #1f2d3d;
 }
 
-.type-item {
-  margin-bottom: 18px;
-}
-
-.type-item :deep(.el-segmented) {
-  width: 100%;
-  padding: 4px;
-  border-radius: 10px;
-  background: #f3f4f6;
-}
-
 .section-title {
   display: flex;
   align-items: center;
@@ -372,23 +367,6 @@
   color: var(--ink);
   font-size: 18px;
   font-weight: 800;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2px 20px;
-}
-
-.form-grid .full-row {
-  grid-column: 1 / -1;
-}
-
-.field-group {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 20px;
 }
 
 .verification-row {
@@ -440,21 +418,6 @@
 
 .register-form :deep(.el-input__prefix-inner) {
   color: #2563eb;
-}
-
-.register-form :deep(.el-segmented__item) {
-  min-height: 40px;
-  border-radius: 8px;
-  font-weight: 700;
-}
-
-.register-form :deep(.el-segmented__item.is-selected) {
-  color: #fff;
-  // background: #fff;
-  // color: var(--brand-blue);
-  // color:#132742;
-  background: rgba(20, 42, 71, 0.8);  // 👈 直接用
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .license-upload :deep(.el-upload) {
@@ -602,6 +565,15 @@
 .rv-content {
   min-height: 256px;
   padding: 17px 16px 18px;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.rv-title {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .rv-badge {
@@ -618,6 +590,23 @@
   padding: 12px 13px;
   border-color: #e5e7eb;
   background: #f8fafc;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rv-points article:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.rv-points article.active {
+  border-color: var(--brand-blue);
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+}
+
+.rv-points article.active strong {
+  color: var(--brand-blue);
 }
 
 .rv-points strong {
@@ -728,14 +717,6 @@
 
   .register-form {
     padding: 24px 18px 20px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .field-group {
-    grid-template-columns: 1fr;
   }
 
   .code-button {

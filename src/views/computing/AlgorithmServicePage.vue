@@ -55,7 +55,7 @@
               v-model="layerFilters.keyword"
               clearable
               size="small"
-              placeholder="搜索任务名称 / ID"
+              placeholder="搜索任务"
             />
             <el-select v-model="layerFilters.service" clearable size="small" placeholder="全部算法">
               <el-option v-for="svc in services" :key="svc.id" :label="svc.name" :value="svc.id" />
@@ -80,7 +80,7 @@
                   <span class="lp-meta">{{ serviceLabel(task.service) }} · 完成 {{ formatTaskTime(task.completedAt || task.createdAt) }}</span>
                   <span class="lp-id">{{ task.taskId }}</span>
                 </div>
-                <el-button link size="small" type="primary" @click.stop="renameTask(task)">改名</el-button>
+                <el-button link size="small" type="primary" @click.stop="renameTask(task)">重命名</el-button>
               </div>
               <div class="lp-actions" v-if="isTaskLoaded(task.taskId)">
                 <el-switch v-model="taskVisibility[task.taskId]" size="small"

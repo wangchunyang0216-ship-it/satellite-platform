@@ -26,10 +26,6 @@ export default defineComponent({
       displayName: "", email: "", phone: "", emailCode: "", captchaVerification: "", agreement: false
     })
 
-    const accountTypeOptions = [
-      { label: "企业注册", value: "enterprise" },
-      { label: "个人注册", value: "personal" }
-    ]
     const processSteps = [
       { index: "01", title: "快速创建账号", desc: "填写手机号、邮箱和密码，完善基础联系人信息。" },
       { index: "02", title: "登录进入控制台", desc: "体验数据检索、算法目录和成果查看功能。" },
@@ -140,7 +136,7 @@ export default defineComponent({
     }
 
     return {
-      accountTypeOptions, captchaCheckSuccess, codeCountdown, footerContent, handleRegister, isEnterprise,
+      captchaCheckSuccess, codeCountdown, footerContent, handleRegister, isEnterprise,
       loading, processSteps, registerForm, registerRef, registerRules, router, sendEmailCode, submitText,
       title, verifyRef
     }

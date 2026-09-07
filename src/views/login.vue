@@ -14,12 +14,12 @@
       <section class="guide-panel">
         <div class="panel-kicker">REMOTE SENSING DATA CENTER</div>
         <h1>遥感卫星数据服务平台</h1>
-        <p class="panel-desc">统一管理卫星数据检索、算法计算、任务进度和三维成果查看，为企业与个人用户提供稳定的遥感数据服务入口。</p>
+        <p class="panel-desc">集卫星数据检索、算法计算、任务管控、三维成果查看于一体，为企业和个人用户提供稳定的遥感数据服务。</p>
 
         <div class="notice-card">
           <div class="notice-title">
             <el-icon><DocumentChecked /></el-icon>
-            平台宣传指导
+            平台使用说明书
           </div>
           <div class="notice-tabs">
             <button
@@ -224,9 +224,9 @@ const guideTabs = [
 
 const guideMap = {
   standard: [
-    { title: "遥感数据接入与共享服务规范", desc: "覆盖账号开通、数据检索、订单申请与成果交付。" },
-    { title: "算法计算任务安全使用说明", desc: "说明上传数据、运行任务、查看结果的权限边界。" },
-    { title: "影像成果在线预览管理办法", desc: "支持三维场景叠加、图层筛选与任务溯源。" }
+    { title: "遥感数据接入与共享服务规范", desc: "账号开通、数据检索、订单申请与成果交付。" },
+    { title: "算法任务使用说明", desc: "数据上传、任务运行、结果查看。" },
+    { title: "影响成果预览管理", desc: "三维场景叠加、图层筛选与任务溯源。" }
   ],
   template: [
     { title: "企业用户注册信息模板", desc: "适用于单位管理员创建组织空间和成员管理。" },
@@ -241,10 +241,10 @@ const guideMap = {
 }
 
 const guideExtras = [
-  { title: "企业账号资料模板", desc: "统一信用代码、联系人、服务范围和成果交付偏好一次补全。" },
-  { title: "个人试用办理指南", desc: "支持科研学习、轻量分析和样例任务验证，开通链路更短。" },
+  { title: "完善企业账号", desc: "统一信用代码、联系人、服务范围、交付偏好。" },
+  { title: "个人账号使用", desc: "支持科研学习、轻量分析和样例任务验证。" },
   { title: "任务进度与审计留痕", desc: "从数据申请、算法运行到成果预览，全流程状态可追踪。" },
-  { title: "三维成果在线查看", desc: "影像、检测结果和空间图层可在控制台进行叠加预览。" }
+  { title: "三维成果在线查看", desc: "影像、检测结果和空间图层叠加预览。" }
 ]
 
 const activeGuideItems = computed(() => guideMap[activeGuide.value])
@@ -291,7 +291,7 @@ function doLogin() {
       }
       return acc
     }, {})
-    router.push({ path: redirect.value || "/", query: otherQueryParams })
+    router.push({ path: redirect.value || "/console/dashboard", query: otherQueryParams })
   }).catch(() => {
     loading.value = false
     loginForm.value.captchaVerification = ""
@@ -319,4 +319,3 @@ getCookie()
 </script>
 
 <style lang="scss" scoped src="@/assets/styles/login.scss"></style>
-
